@@ -6,7 +6,7 @@ dataSources:
     name: RailgunSmartWallet
     network: mainnet
     source:
-      address: "0xfa7093cdd9ee6932b4eb2c9e1cde7ce00b1fa4b9"
+      address: '0xfa7093cdd9ee6932b4eb2c9e1cde7ce00b1fa4b9'
       abi: RailgunSmartWallet
       startBlock: 14737691
     mapping:
@@ -14,20 +14,31 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - ProxyOwnershipTransfer
-        - ProxyPause
-        - ProxyUnpause
-        - ProxyUpgrade
+        - Token
+        - CommitmentPreimage
+        - Commitment
+        - Unshield
       abis:
         - name: RailgunSmartWallet
           file: ./abis/RailgunSmartWallet.json
       eventHandlers:
-        - event: ProxyOwnershipTransfer(address,address)
-          handler: handleProxyOwnershipTransfer
-        - event: ProxyPause()
-          handler: handleProxyPause
-        - event: ProxyUnpause()
-          handler: handleProxyUnpause
-        - event: ProxyUpgrade(address,address)
-          handler: handleProxyUpgrade
+        # Original deployment (May 2022)
+        - event: Nullifiers(uint256,uint256[])
+          handler: handlerNullifiers
+        - event: CommitmentBatch(uint256,uint256,uint256[],(uint256[4],uint256[2],uint256[])[])
+          handler: handlerCommitmentBatch
+        - event: GeneratedCommitmentBatch(uint256,uint256,(uint256,(uint8,address,uint256),uint120)[],uint256[2][])
+          handler: handlerGeneratedCommitmentBatch
+        # Engine V3 (Nov 2022)
+        - event: Nullified(uint16,bytes32[])
+          handler: handleNullified
+        - event: Transact(uint256,uint256,bytes32[],(bytes32[4],bytes32,bytes32,bytes,bytes)[])
+          handler: handleTransact
+        - event: Unshield(address,(uint8,address,uint256),uint256,uint256)
+          handler: handleUnshield
+        - event: Shield(uint256,uint256,(bytes32,(uint8,address,uint256),uint120)[],(bytes32[3],bytes32)[])
+          handler: handleShieldLegacyPreMar23
+        # New Shield event (Mar 2023)
+        - event: Shield(uint256,uint256,(bytes32,(uint8,address,uint256),uint120)[],(bytes32[3],bytes32)[],uint256[])
+          handler: handleShield
       file: ./src/railgun-smart-wallet.ts
