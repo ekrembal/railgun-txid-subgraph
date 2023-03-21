@@ -59,22 +59,6 @@ export const saveCommitmentPreimage = (
   return entity;
 };
 
-export const saveCiphertext = (
-  id: Bytes,
-  iv: Bytes,
-  tag: Bytes,
-  data: Bytes[],
-): Ciphertext => {
-  const entity = new Ciphertext(id);
-
-  entity.iv = iv;
-  entity.tag = tag;
-  entity.data = data;
-
-  entity.save();
-  return entity;
-};
-
 export const saveCiphertextFromBytesArray = (
   id: Bytes,
   ciphertext: Bytes[],
