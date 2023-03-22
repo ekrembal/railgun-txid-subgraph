@@ -9,11 +9,7 @@ import {
   Shield as ShieldEvent,
   Shield1 as ShieldLegacyEvent,
 } from '../generated/RailgunSmartWallet/RailgunSmartWallet';
-import {
-  idFrom2PaddedBigInts,
-  padTo64Bytes,
-  idFromEventLogIndex,
-} from './utils';
+import { padTo64Bytes } from './utils';
 import {
   saveCiphertextFromBytesArray,
   saveCommitmentCiphertext,
@@ -27,8 +23,9 @@ import {
   saveTransactCommitment,
   saveUnshield,
 } from './entity';
+import { idFrom2PaddedBigInts, idFromEventLogIndex } from './id';
 
-const handleShieldShared = (event: ShieldEvent | ShieldLegacyEvent): void => {
+const handleShieldShared = (event: ShieldEvent): void => {
   const commitments = event.params.commitments;
 
   commitments.forEach((commitment, index) => {
@@ -132,10 +129,10 @@ export const handleCommitmentBatch = (event: CommitmentBatchEvent): void => {
     const treePosition = event.params.startPosition.plus(new BigInt(index));
     const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
 
-    const ciphertext = saveCiphertextFromBytesArray(
-      id,
-      ciphertextStruct.ciphertext.map(padTo64Bytes),
+    const ciphertextBytes = ciphertextStruct.ciphertext.map((c) =>
+      padTo64Bytes(Bytes.fromBigInt(c)),
     );
+    const ciphertext = saveCiphertextFromBytesArray(id, ciphertextBytes);
 
     const legacyCommitmentCiphertext = saveLegacyCommitmentCiphertext(
       id,
@@ -158,9 +155,9 @@ export const handleCommitmentBatch = (event: CommitmentBatchEvent): void => {
 
 // Engine V3 (Nov 2022)
 
-export const handleShieldLegacyPreMar23 = (event: ShieldEvent): void => {
-  return handleShieldShared(event);
-};
+// export const handleShieldLegacyPreMar23 = (event: ShieldLegacyEvent): void => {
+//   return handleShieldShared(event);
+// };
 
 export const handleTransact = (event: TransactEvent): void => {
   const ciphertexts = event.params.ciphertext;

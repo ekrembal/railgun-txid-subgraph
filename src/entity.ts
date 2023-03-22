@@ -12,19 +12,16 @@ import {
   Unshield,
   Nullifier,
 } from '../generated/schema';
-import { CommitmentType } from './models';
-import { getTokenHash, getTokenType } from './token-util';
-import { hexlify } from './utils';
+import { getTokenHash, getTokenTypeEnum } from './token';
+import { bigIntToBytes, hexlify } from './utils';
 
 export const saveToken = (
   tokenType: number,
   tokenAddress: Bytes,
   tokenSubID: BigInt,
 ): Token => {
-  const tokenSubIDBytes = Bytes.fromBigInt(tokenSubID);
-  const tokenTypeEnum = getTokenType(tokenType);
-
-  const id = getTokenHash(tokenAddress, tokenTypeEnum, tokenSubIDBytes);
+  const tokenSubIDBytes = bigIntToBytes(tokenSubID);
+  const id = getTokenHash(tokenAddress, tokenType, tokenSubIDBytes);
 
   // Token can be a duplicate for hash, but is immutable in DB.
   // Check if it already exists.
@@ -35,7 +32,7 @@ export const saveToken = (
 
   const entity = new Token(id);
 
-  entity.tokenType = tokenTypeEnum;
+  entity.tokenType = getTokenTypeEnum(tokenType);
   entity.tokenAddress = tokenAddress;
   entity.tokenSubID = tokenSubIDBytes;
 
@@ -84,8 +81,8 @@ export const saveLegacyCommitmentCiphertext = (
   const entity = new LegacyCommitmentCiphertext(id);
 
   entity.ciphertext = ciphertext.id;
-  entity.ephemeralKeys = ephemeralKeys.map(Bytes.fromBigInt);
-  entity.memo = memo.map(Bytes.fromBigInt);
+  entity.ephemeralKeys = ephemeralKeys.map<Bytes>((e) => bigIntToBytes(e));
+  entity.memo = memo.map<Bytes>((e) => bigIntToBytes(e));
 
   entity.save();
   return entity;
@@ -116,7 +113,7 @@ export const saveNullifier = (
   blockNumber: BigInt,
   blockTimestamp: BigInt,
   transactionHash: Bytes,
-  treeNumber: number,
+  treeNumber: i32,
   nullifier: Bytes,
 ): Nullifier => {
   const entity = new Nullifier(id);
@@ -145,7 +142,7 @@ export const saveLegacyGeneratedCommitment = (
 ): LegacyGeneratedCommitment => {
   const entity = new LegacyGeneratedCommitment(id);
 
-  entity.commitmentType = CommitmentType.LegacyGeneratedCommitment;
+  entity.commitmentType = 'LegacyGeneratedCommitment';
 
   entity.blockNumber = blockNumber;
   entity.blockTimestamp = blockTimestamp;
@@ -155,7 +152,7 @@ export const saveLegacyGeneratedCommitment = (
 
   // Custom values: GeneratedCommitmentBatch event
   entity.preimage = preimage.id;
-  entity.encryptedRandom = encryptedRandom.map(Bytes.fromBigInt);
+  entity.encryptedRandom = encryptedRandom.map<Bytes>((e) => bigIntToBytes(e));
 
   entity.save();
   return entity;
@@ -172,7 +169,7 @@ export const saveLegacyEncryptedCommitment = (
 ): LegacyEncryptedCommitment => {
   const entity = new LegacyEncryptedCommitment(id);
 
-  entity.commitmentType = CommitmentType.LegacyEncryptedCommitment;
+  entity.commitmentType = 'LegacyEncryptedCommitment';
 
   entity.blockNumber = blockNumber;
   entity.blockTimestamp = blockTimestamp;
@@ -201,7 +198,7 @@ export const saveShieldCommitment = (
 ): ShieldCommitment => {
   const entity = new ShieldCommitment(id);
 
-  entity.commitmentType = CommitmentType.ShieldCommitment;
+  entity.commitmentType = 'ShieldCommitment';
 
   entity.blockNumber = blockNumber;
   entity.blockTimestamp = blockTimestamp;
@@ -230,7 +227,7 @@ export const saveTransactCommitment = (
 ): TransactCommitment => {
   const entity = new TransactCommitment(id);
 
-  entity.commitmentType = CommitmentType.TransactCommitment;
+  entity.commitmentType = 'TransactCommitment';
 
   entity.blockNumber = blockNumber;
   entity.blockTimestamp = blockTimestamp;
