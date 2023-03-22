@@ -9,7 +9,7 @@ import {
   Shield as ShieldEvent,
   Shield1 as ShieldLegacyEvent,
 } from '../generated/RailgunSmartWallet/RailgunSmartWallet';
-import { padTo64Bytes } from './utils';
+import { bigIntToBytes, padTo64Bytes } from './utils';
 import {
   saveCiphertextFromBytesArray,
   saveCommitmentCiphertext,
@@ -25,55 +25,59 @@ import {
 } from './entity';
 import { idFrom2PaddedBigInts, idFromEventLogIndex } from './id';
 
-const handleShieldShared = (event: ShieldEvent): void => {
-  const commitments = event.params.commitments;
+// const handleShieldShared = (event: ShieldEvent): void => {
+//   const commitments = event.params.commitments;
 
-  commitments.forEach((commitment, index) => {
-    const treePosition = event.params.startPosition.plus(new BigInt(index));
-    const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
+//   for (let i = 0; i < commitments.length; i++) {
+//     const commitment = commitments[i];
+//     const index = i;
 
-    const tokenInfo = commitment.token;
-    const token = saveToken(
-      tokenInfo.tokenType,
-      tokenInfo.tokenAddress,
-      tokenInfo.tokenSubID,
-    );
+//     const treePosition = event.params.startPosition.plus(new BigInt(index));
+//     const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
 
-    const preimage = saveCommitmentPreimage(
-      id,
-      commitment.npk,
-      token,
-      commitment.value,
-    );
+//     const tokenInfo = commitment.token;
+//     const token = saveToken(
+//       tokenInfo.tokenType,
+//       tokenInfo.tokenAddress,
+//       tokenInfo.tokenSubID,
+//     );
 
-    // ShieldEvent has fees, ShieldLegacyEvent does not
-    const fee = 'fees' in event.params ? event.params.fees[index] : null;
+//     const preimage = saveCommitmentPreimage(
+//       id,
+//       commitment.npk,
+//       token,
+//       commitment.value,
+//     );
 
-    saveShieldCommitment(
-      id,
-      event.block.number,
-      event.block.timestamp,
-      event.transaction.hash,
-      event.params.treeNumber,
-      treePosition,
-      preimage,
-      event.params.shieldCiphertext[index].encryptedBundle,
-      event.params.shieldCiphertext[index].shieldKey,
-      fee,
-    );
-  });
-};
+//     // ShieldEvent has fees, ShieldLegacyEvent does not
+//     const fee = 'fees' in event.params ? event.params.fees[index] : null;
+
+//     saveShieldCommitment(
+//       id,
+//       event.block.number,
+//       event.block.timestamp,
+//       event.transaction.hash,
+//       event.params.treeNumber,
+//       treePosition,
+//       preimage,
+//       event.params.shieldCiphertext[index].encryptedBundle,
+//       event.params.shieldCiphertext[index].shieldKey,
+//       fee,
+//     );
+//   }
+// };
 
 // Original deployment (May 2022)
 
 export const handleNullifier = (event: NullifiersEvent): void => {
   const nullifiers = event.params.nullifier;
 
-  nullifiers.forEach((nullifier) => {
+  for (let i = 0; i < nullifiers.length; i++) {
+    const nullifier = nullifiers[i];
     const id = idFrom2PaddedBigInts(event.params.treeNumber, nullifier);
 
     const treeNumber = event.params.treeNumber.toI32();
-    const nullifierBytes = Bytes.fromBigInt(nullifier);
+    const nullifierBytes = bigIntToBytes(nullifier);
 
     saveNullifier(
       id,
@@ -83,54 +87,60 @@ export const handleNullifier = (event: NullifiersEvent): void => {
       treeNumber,
       nullifierBytes,
     );
-  });
+  }
 };
 
-export const handleGeneratedCommitmentBatch = (
-  event: GeneratedCommitmentBatchEvent,
-): void => {
-  const commitments = event.params.commitments;
+// export const handleGeneratedCommitmentBatch = (
+//   event: GeneratedCommitmentBatchEvent,
+// ): void => {
+//   const commitments = event.params.commitments;
 
-  commitments.forEach((commitment, index) => {
-    const treePosition = event.params.startPosition.plus(new BigInt(index));
-    const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
+//   for (let i = 0; i < commitments.length; i++) {
+//     const commitment = commitments[i];
+//     const index = i;
 
-    const tokenInfo = commitment.token;
-    const token = saveToken(
-      tokenInfo.tokenType,
-      tokenInfo.tokenAddress,
-      tokenInfo.tokenSubID,
-    );
+//     const treePosition = event.params.startPosition.plus(new BigInt(index));
+//     const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
 
-    const preimage = saveCommitmentPreimage(
-      id,
-      Bytes.fromBigInt(commitment.npk),
-      token,
-      commitment.value,
-    );
+//     const tokenInfo = commitment.token;
+//     const token = saveToken(
+//       tokenInfo.tokenType,
+//       tokenInfo.tokenAddress,
+//       tokenInfo.tokenSubID,
+//     );
 
-    saveLegacyGeneratedCommitment(
-      id,
-      event.block.number,
-      event.block.timestamp,
-      event.transaction.hash,
-      event.params.treeNumber,
-      treePosition,
-      preimage,
-      event.params.encryptedRandom[index],
-    );
-  });
-};
+//     const preimage = saveCommitmentPreimage(
+//       id,
+//       Bytes.fromBigInt(commitment.npk),
+//       token,
+//       commitment.value,
+//     );
+
+//     saveLegacyGeneratedCommitment(
+//       id,
+//       event.block.number,
+//       event.block.timestamp,
+//       event.transaction.hash,
+//       event.params.treeNumber,
+//       treePosition,
+//       preimage,
+//       event.params.encryptedRandom[index],
+//     );
+//   }
+// };
 
 export const handleCommitmentBatch = (event: CommitmentBatchEvent): void => {
-  const ciphertexts = event.params.ciphertext;
+  const ciphertextStructs = event.params.ciphertext;
 
-  ciphertexts.forEach((ciphertextStruct, index) => {
+  for (let i = 0; i < ciphertextStructs.length; i++) {
+    const ciphertextStruct = ciphertextStructs[i];
+    const index = i;
+
     const treePosition = event.params.startPosition.plus(new BigInt(index));
     const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
 
-    const ciphertextBytes = ciphertextStruct.ciphertext.map((c) =>
-      padTo64Bytes(Bytes.fromBigInt(c)),
+    const ciphertextBytes = ciphertextStruct.ciphertext.map<Bytes>((c) =>
+      padTo64Bytes(bigIntToBytes(c)),
     );
     const ciphertext = saveCiphertextFromBytesArray(id, ciphertextBytes);
 
@@ -150,7 +160,7 @@ export const handleCommitmentBatch = (event: CommitmentBatchEvent): void => {
       treePosition,
       legacyCommitmentCiphertext,
     );
-  });
+  }
 };
 
 // Engine V3 (Nov 2022)
@@ -159,38 +169,41 @@ export const handleCommitmentBatch = (event: CommitmentBatchEvent): void => {
 //   return handleShieldShared(event);
 // };
 
-export const handleTransact = (event: TransactEvent): void => {
-  const ciphertexts = event.params.ciphertext;
+// export const handleTransact = (event: TransactEvent): void => {
+//   const ciphertextStructs = event.params.ciphertext;
 
-  ciphertexts.forEach((ciphertextStruct, index) => {
-    const treePosition = event.params.startPosition.plus(new BigInt(index));
-    const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
+//   for (let i = 0; i < ciphertextStructs.length; i++) {
+//     const ciphertextStruct = ciphertextStructs[i];
+//     const index = i;
 
-    const ciphertext = saveCiphertextFromBytesArray(
-      id,
-      ciphertextStruct.ciphertext,
-    );
+//     const treePosition = event.params.startPosition.plus(new BigInt(index));
+//     const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
 
-    const commitmentCiphertext = saveCommitmentCiphertext(
-      id,
-      ciphertext,
-      ciphertextStruct.blindedSenderViewingKey,
-      ciphertextStruct.blindedReceiverViewingKey,
-      ciphertextStruct.annotationData,
-      ciphertextStruct.memo,
-    );
+//     const ciphertext = saveCiphertextFromBytesArray(
+//       id,
+//       ciphertextStruct.ciphertext,
+//     );
 
-    saveTransactCommitment(
-      id,
-      event.block.number,
-      event.block.timestamp,
-      event.transaction.hash,
-      event.params.treeNumber,
-      treePosition,
-      commitmentCiphertext,
-    );
-  });
-};
+//     const commitmentCiphertext = saveCommitmentCiphertext(
+//       id,
+//       ciphertext,
+//       ciphertextStruct.blindedSenderViewingKey,
+//       ciphertextStruct.blindedReceiverViewingKey,
+//       ciphertextStruct.annotationData,
+//       ciphertextStruct.memo,
+//     );
+
+//     saveTransactCommitment(
+//       id,
+//       event.block.number,
+//       event.block.timestamp,
+//       event.transaction.hash,
+//       event.params.treeNumber,
+//       treePosition,
+//       commitmentCiphertext,
+//     );
+//   }
+// };
 
 export const handleUnshield = (event: UnshieldEvent): void => {
   const id = idFromEventLogIndex(event);
@@ -217,7 +230,9 @@ export const handleUnshield = (event: UnshieldEvent): void => {
 export const handleNullified = (event: NullifiedEvent): void => {
   const nullifiers = event.params.nullifier;
 
-  nullifiers.forEach((nullifier) => {
+  for (let i = 0; i < nullifiers.length; i++) {
+    const nullifier = nullifiers[i];
+
     const id = idFrom2PaddedBigInts(
       BigInt.fromI32(event.params.treeNumber),
       BigInt.fromUnsignedBytes(nullifier),
@@ -231,11 +246,11 @@ export const handleNullified = (event: NullifiedEvent): void => {
       event.params.treeNumber,
       nullifier,
     );
-  });
+  }
 };
 
 // New Shield event (Mar 2023)
 
-export const handleShield = (event: ShieldEvent): void => {
-  return handleShieldShared(event);
-};
+// export const handleShield = (event: ShieldEvent): void => {
+//   return handleShieldShared(event);
+// };

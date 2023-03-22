@@ -16,7 +16,7 @@ import { getTokenHash, getTokenTypeEnum } from './token';
 import { bigIntToBytes, hexlify } from './utils';
 
 export const saveToken = (
-  tokenType: number,
+  tokenType: i32,
   tokenAddress: Bytes,
   tokenSubID: BigInt,
 ): Token => {

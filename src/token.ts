@@ -7,7 +7,7 @@ const SNARK_PRIME_BIG_INT = BigInt.fromString(
 
 const getTokenDataHashNFT = (
   tokenAddress: Bytes,
-  tokenType: number,
+  tokenType: i32,
   tokenSubID: Bytes,
 ): Bytes => {
   const tokenTypeBytes = padTo64Bytes(Bytes.fromI32(tokenType));
@@ -27,7 +27,7 @@ const getTokenDataHashNFT = (
 
 export const getTokenHash = (
   tokenAddress: Bytes,
-  tokenType: number,
+  tokenType: i32,
   tokenSubID: Bytes,
 ): Bytes => {
   switch (tokenType) {
@@ -40,7 +40,7 @@ export const getTokenHash = (
   throw new Error('Unhandled token type');
 };
 
-export const getTokenTypeEnum = (tokenType: number): string => {
+export const getTokenTypeEnum = (tokenType: i32): string => {
   switch (tokenType) {
     case 0:
       return 'ERC20';
