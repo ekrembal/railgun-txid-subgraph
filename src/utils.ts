@@ -15,3 +15,10 @@ export const padTo32Bytes = (bytes: Bytes): Bytes => {
 export const bigIntToBytes = (bigint: BigInt): Bytes => {
   return Bytes.fromByteArray(Bytes.fromBigInt(bigint));
 };
+
+/**
+ * Reverse in an endian-friendly way.
+ */
+export const reverseBytes = (bytes: Bytes): Bytes => {
+  return Bytes.fromUint8Array(bytes.reverse());
+};
