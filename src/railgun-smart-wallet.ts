@@ -9,7 +9,7 @@ import {
   Shield as ShieldEvent,
   Shield1 as ShieldLegacyEvent,
 } from '../generated/RailgunSmartWallet/RailgunSmartWallet';
-import { bigIntToBytes, padTo64Bytes } from './utils';
+import { bigIntToBytes, padTo32Bytes } from './utils';
 import {
   saveCiphertextFromBytesArray,
   saveCommitmentCiphertext,
@@ -98,7 +98,7 @@ export const handleCommitmentBatch = (event: CommitmentBatchEvent): void => {
     const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
 
     const ciphertextBytes = ciphertextStruct.ciphertext.map<Bytes>((c) =>
-      padTo64Bytes(bigIntToBytes(c)),
+      padTo32Bytes(bigIntToBytes(c)),
     );
     const ciphertext = saveCiphertextFromBytesArray(id, ciphertextBytes);
 

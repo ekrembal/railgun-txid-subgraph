@@ -4,7 +4,7 @@ export const hexlify = (bytes: Bytes): string => {
   return bytes.toHexString().substring(2);
 };
 
-export const padTo64Bytes = (bytes: Bytes): Bytes => {
+export const padTo32Bytes = (bytes: Bytes): Bytes => {
   const padded = bytes
     .toHexString()
     .substring(2)
