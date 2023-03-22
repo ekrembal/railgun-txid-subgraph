@@ -169,7 +169,9 @@ export const handleTransact = (event: TransactEvent): void => {
     const ciphertextStruct = ciphertextStructs[i];
     const index = i;
 
-    const treePosition = event.params.startPosition.plus(new BigInt(index));
+    const treePosition = event.params.startPosition.plus(
+      BigInt.fromString(index.toString()),
+    );
     const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
 
     const ciphertext = saveCiphertextFromBytesArray(
@@ -227,7 +229,7 @@ export const handleNullified = (event: NullifiedEvent): void => {
     const nullifier = nullifiers[i];
 
     const id = idFrom2PaddedBigInts(
-      BigInt.fromI32(event.params.treeNumber),
+      BigInt.fromString(event.params.treeNumber.toString()),
       BigInt.fromUnsignedBytes(nullifier),
     );
 
