@@ -6,7 +6,7 @@ import {
   afterAll,
 } from 'matchstick-as/assembly/index';
 import { BigInt, Bytes } from '@graphprotocol/graph-ts';
-import { getTokenHash } from '../../src/token';
+import { getTokenHash, getTokenTypeEnum } from '../../src/token';
 
 describe('token', () => {
   beforeAll(() => {});
@@ -37,5 +37,11 @@ describe('token', () => {
         '2d0c48e5b759b13bea21d65719c47747f857f47be541ddb0df54fa0a040a7bed',
       ),
     );
+  });
+
+  test('Should get token hashes for all token types', () => {
+    assert.stringEquals(getTokenTypeEnum(0), 'ERC20');
+    assert.stringEquals(getTokenTypeEnum(1), 'ERC721');
+    assert.stringEquals(getTokenTypeEnum(2), 'ERC1155');
   });
 });
