@@ -8,10 +8,12 @@ import {
 } from 'matchstick-as/assembly/index';
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import {
+  createCommitmentBatchEvent,
   createGeneratedCommitmentBatchEvent,
   createNullifiersEvent,
 } from '../util/event-utils.test';
 import {
+  handleCommitmentBatch,
   handleGeneratedCommitmentBatch,
   handleNullifier,
 } from '../../src/railgun-smart-wallet';
@@ -159,6 +161,90 @@ describe('railgun-smart-wallet', () => {
         ).toHexString()}, ${bigIntToBytes(
           encryptedRandom[i][1],
         ).toHexString()}]`,
+      );
+    }
+  });
+
+  test('Should handle CommitmentBatch event', () => {
+    const treeNumber = BigInt.fromString('2000');
+    const startPosition = BigInt.fromString('3000');
+
+    const hash: BigInt[] = [
+      BigInt.fromString('1111'),
+      BigInt.fromString('2222'),
+    ];
+
+    const ciphertext: Array<ethereum.Value>[] = [
+      [
+        // ciphertext
+        ethereum.Value.fromUnsignedBigIntArray([
+          BigInt.fromString('4000'),
+          BigInt.fromString('5000'),
+        ]),
+        // ephemeralKeys
+        ethereum.Value.fromUnsignedBigIntArray([
+          BigInt.fromString('6000'),
+          BigInt.fromString('7000'),
+        ]),
+        // memo
+        ethereum.Value.fromUnsignedBigIntArray([
+          BigInt.fromString('8000'),
+          BigInt.fromString('9000'),
+        ]),
+      ],
+      [
+        // ciphertext
+        ethereum.Value.fromUnsignedBigIntArray([
+          BigInt.fromString('14000'),
+          BigInt.fromString('15000'),
+        ]),
+        // ephemeralKeys
+        ethereum.Value.fromUnsignedBigIntArray([
+          BigInt.fromString('16000'),
+          BigInt.fromString('17000'),
+        ]),
+        // memo
+        ethereum.Value.fromUnsignedBigIntArray([
+          BigInt.fromString('18000'),
+          BigInt.fromString('19000'),
+        ]),
+      ],
+    ];
+    const event = createCommitmentBatchEvent(
+      treeNumber,
+      startPosition,
+      hash,
+      ciphertext,
+    );
+
+    handleCommitmentBatch(event);
+
+    assert.entityCount('Ciphertext', 2);
+    assert.entityCount('LegacyEncryptedCommitment', 2);
+
+    const expectedIDs = [
+      '0x000000000000000000000000000000000000000000000000000000000000d007000000000000000000000000000000000000000000000000000000000000b80b',
+      '0x000000000000000000000000000000000000000000000000000000000000d007000000000000000000000000000000000000000000000000000000000000b90b',
+    ];
+
+    for (let i = 0; i < expectedIDs.length; i++) {
+      const expectedID = expectedIDs[i];
+      assertCommonCommitmentFields(
+        'LegacyEncryptedCommitment',
+        expectedID,
+        event,
+        treeNumber,
+        startPosition,
+        BigInt.fromI32(i),
+      );
+
+      // TODO: check ciphertext fields
+
+      assert.fieldEquals(
+        'LegacyEncryptedCommitment',
+        expectedID,
+        'ciphertext',
+        expectedID,
       );
     }
   });

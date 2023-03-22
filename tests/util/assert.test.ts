@@ -40,15 +40,10 @@ export const assertCommonCommitmentFields = (
 ): void => {
   assertCommonFields(entityType, id, event);
 
-  assert.fieldEquals(
-    'LegacyGeneratedCommitment',
-    id,
-    'treeNumber',
-    treeNumber.toString(),
-  );
+  assert.fieldEquals(entityType, id, 'treeNumber', treeNumber.toString());
 
   assert.fieldEquals(
-    'LegacyGeneratedCommitment',
+    entityType,
     id,
     'treePosition',
     startPosition.plus(i).toString(),

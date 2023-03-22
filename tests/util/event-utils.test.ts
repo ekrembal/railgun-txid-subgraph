@@ -78,3 +78,46 @@ export function createGeneratedCommitmentBatchEvent(
 
   return event;
 }
+
+export function createCommitmentBatchEvent(
+  treeNumber: BigInt,
+  startPosition: BigInt,
+  hash: BigInt[],
+  ciphertext: ethereum.Value[][],
+): CommitmentBatchEvent {
+  const event: CommitmentBatchEvent = changetype<CommitmentBatchEvent>(
+    newMockEvent(),
+  );
+
+  event.parameters = [];
+
+  event.parameters.push(
+    new ethereum.EventParam(
+      'treeNumber',
+      ethereum.Value.fromUnsignedBigInt(treeNumber),
+    ),
+  );
+  event.parameters.push(
+    new ethereum.EventParam(
+      'startPosition',
+      ethereum.Value.fromUnsignedBigInt(startPosition),
+    ),
+  );
+  event.parameters.push(
+    new ethereum.EventParam(
+      'hash',
+      ethereum.Value.fromUnsignedBigIntArray(hash),
+    ),
+  );
+  const tupleCiphertextArray: ethereum.Tuple[] = changetype<ethereum.Tuple[]>(
+    ciphertext,
+  );
+  event.parameters.push(
+    new ethereum.EventParam(
+      'ciphertext',
+      ethereum.Value.fromTupleArray(tupleCiphertextArray),
+    ),
+  );
+
+  return event;
+}
