@@ -25,48 +25,6 @@ import {
 } from './entity';
 import { idFrom2PaddedBigInts, idFromEventLogIndex } from './id';
 
-// const handleShieldShared = (event: ShieldEvent): void => {
-//   const commitments = event.params.commitments;
-
-//   for (let i = 0; i < commitments.length; i++) {
-//     const commitment = commitments[i];
-//     const index = i;
-
-//     const treePosition = event.params.startPosition.plus(new BigInt(index));
-//     const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
-
-//     const tokenInfo = commitment.token;
-//     const token = saveToken(
-//       tokenInfo.tokenType,
-//       tokenInfo.tokenAddress,
-//       tokenInfo.tokenSubID,
-//     );
-
-//     const preimage = saveCommitmentPreimage(
-//       id,
-//       commitment.npk,
-//       token,
-//       commitment.value,
-//     );
-
-//     // ShieldEvent has fees, ShieldLegacyEvent does not
-//     const fee = 'fees' in event.params ? event.params.fees[index] : null;
-
-//     saveShieldCommitment(
-//       id,
-//       event.block.number,
-//       event.block.timestamp,
-//       event.transaction.hash,
-//       event.params.treeNumber,
-//       treePosition,
-//       preimage,
-//       event.params.shieldCiphertext[index].encryptedBundle,
-//       event.params.shieldCiphertext[index].shieldKey,
-//       fee,
-//     );
-//   }
-// };
-
 // Original deployment (May 2022)
 
 export const handleNullifier = (event: NullifiersEvent): void => {
@@ -90,44 +48,44 @@ export const handleNullifier = (event: NullifiersEvent): void => {
   }
 };
 
-// export const handleGeneratedCommitmentBatch = (
-//   event: GeneratedCommitmentBatchEvent,
-// ): void => {
-//   const commitments = event.params.commitments;
+export const handleGeneratedCommitmentBatch = (
+  event: GeneratedCommitmentBatchEvent,
+): void => {
+  const commitments = event.params.commitments;
 
-//   for (let i = 0; i < commitments.length; i++) {
-//     const commitment = commitments[i];
-//     const index = i;
+  for (let i = 0; i < commitments.length; i++) {
+    const commitment = commitments[i];
+    const index = i;
 
-//     const treePosition = event.params.startPosition.plus(new BigInt(index));
-//     const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
+    const treePosition = event.params.startPosition.plus(new BigInt(index));
+    const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
 
-//     const tokenInfo = commitment.token;
-//     const token = saveToken(
-//       tokenInfo.tokenType,
-//       tokenInfo.tokenAddress,
-//       tokenInfo.tokenSubID,
-//     );
+    const tokenInfo = commitment.token;
+    const token = saveToken(
+      tokenInfo.tokenType,
+      tokenInfo.tokenAddress,
+      tokenInfo.tokenSubID,
+    );
 
-//     const preimage = saveCommitmentPreimage(
-//       id,
-//       Bytes.fromBigInt(commitment.npk),
-//       token,
-//       commitment.value,
-//     );
+    const preimage = saveCommitmentPreimage(
+      id,
+      bigIntToBytes(commitment.npk),
+      token,
+      commitment.value,
+    );
 
-//     saveLegacyGeneratedCommitment(
-//       id,
-//       event.block.number,
-//       event.block.timestamp,
-//       event.transaction.hash,
-//       event.params.treeNumber,
-//       treePosition,
-//       preimage,
-//       event.params.encryptedRandom[index],
-//     );
-//   }
-// };
+    saveLegacyGeneratedCommitment(
+      id,
+      event.block.number,
+      event.block.timestamp,
+      event.transaction.hash,
+      event.params.treeNumber,
+      treePosition,
+      preimage,
+      event.params.encryptedRandom[index],
+    );
+  }
+};
 
 export const handleCommitmentBatch = (event: CommitmentBatchEvent): void => {
   const ciphertextStructs = event.params.ciphertext;
@@ -165,45 +123,80 @@ export const handleCommitmentBatch = (event: CommitmentBatchEvent): void => {
 
 // Engine V3 (Nov 2022)
 
-// export const handleShieldLegacyPreMar23 = (event: ShieldLegacyEvent): void => {
-//   return handleShieldShared(event);
-// };
+export const handleShieldLegacyPreMar23 = (event: ShieldLegacyEvent): void => {
+  const commitments = event.params.commitments;
 
-// export const handleTransact = (event: TransactEvent): void => {
-//   const ciphertextStructs = event.params.ciphertext;
+  for (let i = 0; i < commitments.length; i++) {
+    const commitment = commitments[i];
+    const index = i;
 
-//   for (let i = 0; i < ciphertextStructs.length; i++) {
-//     const ciphertextStruct = ciphertextStructs[i];
-//     const index = i;
+    const treePosition = event.params.startPosition.plus(new BigInt(index));
+    const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
 
-//     const treePosition = event.params.startPosition.plus(new BigInt(index));
-//     const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
+    const tokenInfo = commitment.token;
+    const token = saveToken(
+      tokenInfo.tokenType,
+      tokenInfo.tokenAddress,
+      tokenInfo.tokenSubID,
+    );
 
-//     const ciphertext = saveCiphertextFromBytesArray(
-//       id,
-//       ciphertextStruct.ciphertext,
-//     );
+    const preimage = saveCommitmentPreimage(
+      id,
+      commitment.npk,
+      token,
+      commitment.value,
+    );
 
-//     const commitmentCiphertext = saveCommitmentCiphertext(
-//       id,
-//       ciphertext,
-//       ciphertextStruct.blindedSenderViewingKey,
-//       ciphertextStruct.blindedReceiverViewingKey,
-//       ciphertextStruct.annotationData,
-//       ciphertextStruct.memo,
-//     );
+    saveShieldCommitment(
+      id,
+      event.block.number,
+      event.block.timestamp,
+      event.transaction.hash,
+      event.params.treeNumber,
+      treePosition,
+      preimage,
+      event.params.shieldCiphertext[index].encryptedBundle,
+      event.params.shieldCiphertext[index].shieldKey,
+      null, // No fee in legacy shield
+    );
+  }
+};
 
-//     saveTransactCommitment(
-//       id,
-//       event.block.number,
-//       event.block.timestamp,
-//       event.transaction.hash,
-//       event.params.treeNumber,
-//       treePosition,
-//       commitmentCiphertext,
-//     );
-//   }
-// };
+export const handleTransact = (event: TransactEvent): void => {
+  const ciphertextStructs = event.params.ciphertext;
+
+  for (let i = 0; i < ciphertextStructs.length; i++) {
+    const ciphertextStruct = ciphertextStructs[i];
+    const index = i;
+
+    const treePosition = event.params.startPosition.plus(new BigInt(index));
+    const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
+
+    const ciphertext = saveCiphertextFromBytesArray(
+      id,
+      ciphertextStruct.ciphertext,
+    );
+
+    const commitmentCiphertext = saveCommitmentCiphertext(
+      id,
+      ciphertext,
+      ciphertextStruct.blindedSenderViewingKey,
+      ciphertextStruct.blindedReceiverViewingKey,
+      ciphertextStruct.annotationData,
+      ciphertextStruct.memo,
+    );
+
+    saveTransactCommitment(
+      id,
+      event.block.number,
+      event.block.timestamp,
+      event.transaction.hash,
+      event.params.treeNumber,
+      treePosition,
+      commitmentCiphertext,
+    );
+  }
+};
 
 export const handleUnshield = (event: UnshieldEvent): void => {
   const id = idFromEventLogIndex(event);
@@ -251,6 +244,41 @@ export const handleNullified = (event: NullifiedEvent): void => {
 
 // New Shield event (Mar 2023)
 
-// export const handleShield = (event: ShieldEvent): void => {
-//   return handleShieldShared(event);
-// };
+export const handleShield = (event: ShieldEvent): void => {
+  const commitments = event.params.commitments;
+
+  for (let i = 0; i < commitments.length; i++) {
+    const commitment = commitments[i];
+    const index = i;
+
+    const treePosition = event.params.startPosition.plus(new BigInt(index));
+    const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
+
+    const tokenInfo = commitment.token;
+    const token = saveToken(
+      tokenInfo.tokenType,
+      tokenInfo.tokenAddress,
+      tokenInfo.tokenSubID,
+    );
+
+    const preimage = saveCommitmentPreimage(
+      id,
+      commitment.npk,
+      token,
+      commitment.value,
+    );
+
+    saveShieldCommitment(
+      id,
+      event.block.number,
+      event.block.timestamp,
+      event.transaction.hash,
+      event.params.treeNumber,
+      treePosition,
+      preimage,
+      event.params.shieldCiphertext[index].encryptedBundle,
+      event.params.shieldCiphertext[index].shieldKey,
+      event.params.fees[index],
+    );
+  }
+};
