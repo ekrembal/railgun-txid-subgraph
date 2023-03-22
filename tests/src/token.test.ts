@@ -5,7 +5,7 @@ import {
   beforeAll,
   afterAll,
 } from 'matchstick-as/assembly/index';
-import { Bytes } from '@graphprotocol/graph-ts';
+import { Bytes, BigInt } from '@graphprotocol/graph-ts';
 import { getTokenHash, getTokenTypeEnum } from '../../src/token';
 
 describe('token', () => {
@@ -17,14 +17,19 @@ describe('token', () => {
     const tokenAddress = Bytes.fromHexString(
       '0x1234567890123456789012345678901234567890',
     );
-    const tokenSubID = Bytes.fromHexString('0x01');
+    const tokenSubID = BigInt.fromString('1');
 
     // ERC20
-    assert.bytesEquals(getTokenHash(tokenAddress, 0, tokenSubID), tokenAddress);
+    assert.bytesEquals(
+      getTokenHash(0, tokenAddress, tokenSubID),
+      Bytes.fromHexString(
+        '0x0000000000000000000000001234567890123456789012345678901234567890',
+      ),
+    );
 
     // ERC721
     assert.bytesEquals(
-      getTokenHash(tokenAddress, 1, tokenSubID),
+      getTokenHash(1, tokenAddress, tokenSubID),
       Bytes.fromHexString(
         '075b737079de804169d5e006add4da4942063ab4fce32268c469c49460e52be0',
       ),
@@ -32,7 +37,7 @@ describe('token', () => {
 
     // ERC1155
     assert.bytesEquals(
-      getTokenHash(tokenAddress, 2, tokenSubID),
+      getTokenHash(2, tokenAddress, tokenSubID),
       Bytes.fromHexString(
         '2d0c48e5b759b13bea21d65719c47747f857f47be541ddb0df54fa0a040a7bed',
       ),

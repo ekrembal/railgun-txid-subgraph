@@ -1,4 +1,4 @@
-import { Bytes, BigInt } from '@graphprotocol/graph-ts';
+import { Bytes, BigInt, log } from '@graphprotocol/graph-ts';
 import {
   CommitmentPreimage,
   Token,
@@ -21,7 +21,7 @@ export const saveToken = (
   tokenSubID: BigInt,
 ): Token => {
   const tokenSubIDBytes = bigIntToBytes(tokenSubID);
-  const id = getTokenHash(tokenAddress, tokenType, tokenSubIDBytes);
+  const id = getTokenHash(tokenType, tokenAddress, tokenSubID);
 
   // Token can be a duplicate for hash, but is immutable in DB.
   // Check if it already exists.

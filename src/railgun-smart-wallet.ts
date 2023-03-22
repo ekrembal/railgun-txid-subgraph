@@ -33,7 +33,7 @@ export const handleNullifier = (event: NullifiersEvent): void => {
   for (let i = 0; i < nullifiers.length; i++) {
     const nullifier = nullifiers[i];
     const id = idFrom2PaddedBigInts(event.params.treeNumber, nullifier);
-    log.info('Nullifier ID {}: {}', [i.toString(), id.toHexString()]);
+    // log.info('Nullifier ID {}: {}', [i.toString(), id.toHexString()]);
 
     const treeNumber = event.params.treeNumber;
     const nullifierBytes = bigIntToBytes(nullifier);
@@ -58,9 +58,11 @@ export const handleGeneratedCommitmentBatch = (
     const commitment = commitments[i];
     const index = i;
 
-    const treePosition = event.params.startPosition.plus(new BigInt(index));
+    const treePosition = event.params.startPosition.plus(
+      BigInt.fromString(index.toString()),
+    );
     const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
-    log.info('Commitment ID {}: {}', [i.toString(), id.toHexString()]);
+    // log.info('Commitment ID {}: {}', [i.toString(), id.toHexString()]);
 
     const tokenInfo = commitment.token;
     const token = saveToken(
@@ -96,7 +98,9 @@ export const handleCommitmentBatch = (event: CommitmentBatchEvent): void => {
     const ciphertextStruct = ciphertextStructs[i];
     const index = i;
 
-    const treePosition = event.params.startPosition.plus(new BigInt(index));
+    const treePosition = event.params.startPosition.plus(
+      BigInt.fromString(index.toString()),
+    );
     const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
 
     const ciphertextBytes = ciphertextStruct.ciphertext.map<Bytes>((c) =>
@@ -132,7 +136,9 @@ export const handleShieldLegacyPreMar23 = (event: ShieldLegacyEvent): void => {
     const commitment = commitments[i];
     const index = i;
 
-    const treePosition = event.params.startPosition.plus(new BigInt(index));
+    const treePosition = event.params.startPosition.plus(
+      BigInt.fromString(index.toString()),
+    );
     const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
 
     const tokenInfo = commitment.token;
@@ -255,7 +261,9 @@ export const handleShield = (event: ShieldEvent): void => {
     const commitment = commitments[i];
     const index = i;
 
-    const treePosition = event.params.startPosition.plus(new BigInt(index));
+    const treePosition = event.params.startPosition.plus(
+      BigInt.fromString(index.toString()),
+    );
     const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
 
     const tokenInfo = commitment.token;

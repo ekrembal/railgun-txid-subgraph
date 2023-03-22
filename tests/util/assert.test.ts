@@ -1,5 +1,7 @@
-import { ethereum } from '@graphprotocol/graph-ts';
-import { assert } from 'matchstick-as';
+import { ethereum, BigInt } from '@graphprotocol/graph-ts';
+import { assert, log } from 'matchstick-as';
+import { getTokenTypeEnum } from '../../src/token';
+import { padHexStringToEven } from '../../src/utils';
 
 export const assertCommonFields = (
   entityType: string,
@@ -25,5 +27,58 @@ export const assertCommonFields = (
     id,
     'transactionHash',
     event.transaction.hash.toHexString(),
+  );
+};
+
+export const assertCommonCommitmentFields = (
+  entityType: string,
+  id: string,
+  event: ethereum.Event,
+  treeNumber: BigInt,
+  startPosition: BigInt,
+  i: BigInt,
+): void => {
+  assertCommonFields(entityType, id, event);
+
+  assert.fieldEquals(
+    'LegacyGeneratedCommitment',
+    id,
+    'treeNumber',
+    treeNumber.toString(),
+  );
+
+  assert.fieldEquals(
+    'LegacyGeneratedCommitment',
+    id,
+    'treePosition',
+    startPosition.plus(i).toString(),
+  );
+};
+
+export const assertTokenFields = (
+  tokenHash: string,
+  tuple: ethereum.Tuple,
+): void => {
+  const tokenType = tuple[0].toI32();
+  const tokenAddress = tuple[1].toAddress();
+  const tokenSubID = tuple[2].toBigInt();
+
+  assert.fieldEquals(
+    'Token',
+    tokenHash,
+    'tokenType',
+    getTokenTypeEnum(tokenType),
+  );
+  assert.fieldEquals(
+    'Token',
+    tokenHash,
+    'tokenAddress',
+    tokenAddress.toHexString(),
+  );
+  assert.fieldEquals(
+    'Token',
+    tokenHash,
+    'tokenSubID',
+    padHexStringToEven(tokenSubID.toHexString()),
   );
 };

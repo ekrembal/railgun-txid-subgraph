@@ -6,15 +6,17 @@ const SNARK_PRIME_BIG_INT = BigInt.fromString(
 );
 
 const getTokenDataHashNFT = (
-  tokenAddress: Bytes,
   tokenType: i32,
-  tokenSubID: Bytes,
+  tokenAddress: Bytes,
+  tokenSubID: BigInt,
 ): Bytes => {
   const tokenTypeBytes = padTo32Bytes(
     bigIntToBytes(BigInt.fromString(tokenType.toString())),
   );
   const tokenAddressBytes = padTo32Bytes(tokenAddress);
-  const tokenSubIDBytes = padTo32Bytes(tokenSubID);
+  const tokenSubIDBytes = padTo32Bytes(
+    bigIntToBytes(BigInt.fromString(tokenSubID.toString())),
+  );
 
   // keccak256 hash of the token data.
   const combinedData: Bytes = tokenTypeBytes
@@ -31,16 +33,16 @@ const getTokenDataHashNFT = (
 };
 
 export const getTokenHash = (
-  tokenAddress: Bytes,
   tokenType: i32,
-  tokenSubID: Bytes,
+  tokenAddress: Bytes,
+  tokenSubID: BigInt,
 ): Bytes => {
   switch (tokenType) {
     case 0: // TokenType.ERC20:
-      return tokenAddress;
+      return padTo32Bytes(tokenAddress);
     case 1: // TokenType.ERC721:
     case 2: // TokenType.ERC1155:
-      return getTokenDataHashNFT(tokenAddress, tokenType, tokenSubID);
+      return getTokenDataHashNFT(tokenType, tokenAddress, tokenSubID);
   }
   throw new Error('Unhandled token type');
 };

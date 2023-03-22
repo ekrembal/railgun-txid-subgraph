@@ -22,3 +22,9 @@ export const bigIntToBytes = (bigint: BigInt): Bytes => {
 export const reverseBytes = (bytes: Bytes): Bytes => {
   return Bytes.fromUint8Array(bytes.reverse());
 };
+
+export const padHexStringToEven = (hexString: string): string => {
+  const stripped = hexString.substring(2);
+  const padded = stripped.length % 2 === 0 ? stripped : '0' + stripped;
+  return `0x${padded}`;
+};
