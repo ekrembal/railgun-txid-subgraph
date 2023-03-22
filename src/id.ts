@@ -13,6 +13,9 @@ export const idFrom2PaddedBigInts = (
   return bytes0.concat(bytes1);
 };
 
+/**
+ * NOTE: The event log index will be converted to Bytes little-endian.
+ */
 export const idFromEventLogIndex = (event: ethereum.Event): Bytes => {
   return event.transaction.hash.concatI32(event.logIndex.toI32());
 };

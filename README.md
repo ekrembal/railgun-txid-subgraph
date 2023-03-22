@@ -1,5 +1,5 @@
 ## Subgraph template for RAILGUN V2
 
-### Run tests (utils):
+### Run tests:
 
-yarn test utils -v 0.5.0
+yarn test

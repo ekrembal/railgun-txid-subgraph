@@ -34,9 +34,16 @@ describe('utils', () => {
   });
 
   test('Should convert bigint to Bytes type', () => {
+    // Big endian
     assert.bytesEquals(
       bigIntToBytes(BigInt.fromString('2')),
       Bytes.fromHexString('0x02'),
+    );
+
+    // Little endian
+    assert.bytesEquals(
+      bigIntToBytes(BigInt.fromI32(2)),
+      Bytes.fromHexString('0x02000000'),
     );
   });
 });
