@@ -6,7 +6,7 @@ import {
   afterAll,
   newMockEvent,
 } from 'matchstick-as/assembly/index';
-import { Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
+import { BigInt, Bytes } from '@graphprotocol/graph-ts';
 import { idFrom2PaddedBigInts, idFromEventLogIndex } from '../../src/id';
 
 describe('id', () => {

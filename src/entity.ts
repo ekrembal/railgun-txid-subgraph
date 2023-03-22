@@ -113,7 +113,7 @@ export const saveNullifier = (
   blockNumber: BigInt,
   blockTimestamp: BigInt,
   transactionHash: Bytes,
-  treeNumber: i32,
+  treeNumber: BigInt,
   nullifier: Bytes,
 ): Nullifier => {
   const entity = new Nullifier(id);
@@ -123,7 +123,7 @@ export const saveNullifier = (
   entity.transactionHash = transactionHash;
 
   // Custom required values
-  entity.treeNumber = treeNumber;
+  entity.treeNumber = treeNumber.toI32();
   entity.nullifier = nullifier;
 
   entity.save();

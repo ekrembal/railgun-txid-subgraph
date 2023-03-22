@@ -1,4 +1,4 @@
-import { Bytes, BigInt } from '@graphprotocol/graph-ts';
+import { Bytes, BigInt, log } from '@graphprotocol/graph-ts';
 import {
   Nullifiers as NullifiersEvent,
   CommitmentBatch as CommitmentBatchEvent,
@@ -33,8 +33,9 @@ export const handleNullifier = (event: NullifiersEvent): void => {
   for (let i = 0; i < nullifiers.length; i++) {
     const nullifier = nullifiers[i];
     const id = idFrom2PaddedBigInts(event.params.treeNumber, nullifier);
+    log.info('Nullifier ID {}: {}', [i.toString(), id.toHexString()]);
 
-    const treeNumber = event.params.treeNumber.toI32();
+    const treeNumber = event.params.treeNumber;
     const nullifierBytes = bigIntToBytes(nullifier);
 
     saveNullifier(
@@ -59,6 +60,7 @@ export const handleGeneratedCommitmentBatch = (
 
     const treePosition = event.params.startPosition.plus(new BigInt(index));
     const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
+    log.info('Commitment ID {}: {}', [i.toString(), id.toHexString()]);
 
     const tokenInfo = commitment.token;
     const token = saveToken(
@@ -238,7 +240,7 @@ export const handleNullified = (event: NullifiedEvent): void => {
       event.block.number,
       event.block.timestamp,
       event.transaction.hash,
-      event.params.treeNumber,
+      BigInt.fromString(event.params.treeNumber.toString()),
       nullifier,
     );
   }
