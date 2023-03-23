@@ -175,3 +175,24 @@ export function createShield<T extends ethereum.Event>(
 
   return event;
 }
+
+export function createNullifiedEvent(
+  treeNumber: i32,
+  nullifiers: Bytes[],
+): NullifiedEvent {
+  const event: NullifiedEvent = changetype<NullifiedEvent>(newMockEvent());
+
+  event.parameters = [];
+
+  event.parameters.push(
+    new ethereum.EventParam('treeNumber', ethereum.Value.fromI32(treeNumber)),
+  );
+  event.parameters.push(
+    new ethereum.EventParam(
+      'nullifier',
+      ethereum.Value.fromBytesArray(nullifiers),
+    ),
+  );
+
+  return event;
+}

@@ -6,10 +6,13 @@ import {
   assert,
 } from 'matchstick-as/assembly/index';
 import { BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
-import { createShield } from '../util/event-utils.test';
-import { handleShield } from '../../src/railgun-smart-wallet';
+import { createNullifiedEvent, createShield } from '../util/event-utils.test';
+import { handleNullified, handleShield } from '../../src/railgun-smart-wallet';
 import { bigIntToBytes } from '../../src/utils';
-import { assertCommonCommitmentFields } from '../util/assert.test';
+import {
+  assertCommonCommitmentFields,
+  assertCommonFields,
+} from '../util/assert.test';
 import {
   MOCK_TOKEN_ERC20_HASH,
   MOCK_TOKEN_ERC20_TUPLE,
@@ -145,6 +148,42 @@ describe('railgun-smart-wallet-v2.1', () => {
         expectedID,
         'fee',
         fees[i].toString(),
+      );
+    }
+  });
+
+  test('Should handle Nullified event', () => {
+    const treeNumber = changetype<i32>(2000);
+    const nullifiers = [
+      Bytes.fromHexString('0x3000'),
+      Bytes.fromHexString('0x4000'),
+    ];
+    const event = createNullifiedEvent(treeNumber, nullifiers);
+
+    handleNullified(event);
+
+    assert.entityCount('Nullifier', 2);
+
+    const expectedIDs = [
+      '0x000000000000000000000000000000000000000000000000000000000000d0070000000000000000000000000000000000000000000000000000000000300000',
+      '0x000000000000000000000000000000000000000000000000000000000000d0070000000000000000000000000000000000000000000000000000000000400000',
+    ];
+
+    for (let i = 0; i < expectedIDs.length; i++) {
+      const expectedID = expectedIDs[i];
+      assertCommonFields('Nullifier', expectedID, event);
+
+      assert.fieldEquals(
+        'Nullifier',
+        expectedID,
+        'treeNumber',
+        treeNumber.toString(),
+      );
+      assert.fieldEquals(
+        'Nullifier',
+        expectedID,
+        'nullifier',
+        nullifiers[i].toHexString(),
       );
     }
   });
