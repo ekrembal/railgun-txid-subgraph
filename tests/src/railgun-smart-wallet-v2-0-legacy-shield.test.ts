@@ -6,11 +6,8 @@ import {
   assert,
 } from 'matchstick-as/assembly/index';
 import { BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
-import { createShieldLegacyPreMar23 } from '../util/event-utils.test';
-import {
-  handleCommitmentBatch,
-  handleShieldLegacyPreMar23,
-} from '../../src/railgun-smart-wallet';
+import { createShield } from '../util/event-utils.test';
+import { handleShieldLegacyPreMar23 } from '../../src/railgun-smart-wallet';
 import { assertCommonCommitmentFields } from '../util/assert.test';
 import {
   MOCK_TOKEN_ERC20_HASH,
@@ -19,13 +16,14 @@ import {
   MOCK_TOKEN_ERC721_TUPLE,
 } from '../util/models.test';
 import { bigIntToBytes } from '../../src/utils';
+import { Shield1 as LegacyShieldEvent } from '../../generated/RailgunSmartWallet/RailgunSmartWallet';
 
-describe('railgun-smart-wallet-v2.0-legacy-shield.test', () => {
+describe('railgun-smart-wallet-v2.0-legacy-shield', () => {
   afterEach(() => {
     clearStore();
   });
 
-  test('Should handle Shield (v2.1 new shield) event', () => {
+  test('Should handle Shield (v2.0 legacy shield) event', () => {
     const treeNumber = BigInt.fromString('2000');
     const startPosition = BigInt.fromString('3000');
 
@@ -74,11 +72,12 @@ describe('railgun-smart-wallet-v2.0-legacy-shield.test', () => {
       ],
     ];
 
-    const event = createShieldLegacyPreMar23(
+    const event = createShield<LegacyShieldEvent>(
       treeNumber,
       startPosition,
       commitments,
       shieldCiphertext,
+      null, // fees
     );
 
     handleShieldLegacyPreMar23(event);
