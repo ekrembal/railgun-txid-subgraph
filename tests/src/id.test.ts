@@ -10,10 +10,6 @@ import { BigInt, Bytes } from '@graphprotocol/graph-ts';
 import { idFrom2PaddedBigInts, idFromEventLogIndex } from '../../src/id';
 
 describe('id', () => {
-  beforeAll(() => {});
-
-  afterAll(() => {});
-
   test('Should create ID from 2 padded bigints', () => {
     assert.bytesEquals(
       idFrom2PaddedBigInts(BigInt.fromString('2'), BigInt.fromString('3')),

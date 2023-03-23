@@ -1,4 +1,4 @@
-import { Bytes, BigInt, log } from '@graphprotocol/graph-ts';
+import { Bytes, BigInt } from '@graphprotocol/graph-ts';
 import {
   Nullifiers as NullifiersEvent,
   CommitmentBatch as CommitmentBatchEvent,
@@ -102,7 +102,7 @@ export const handleCommitmentBatch = (event: CommitmentBatchEvent): void => {
     const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
 
     const ciphertextBytes = ciphertextStruct.ciphertext.map<Bytes>((c) =>
-      padTo32Bytes(bigIntToBytes(c)),
+      bigIntToBytes(c),
     );
     const ciphertext = saveCiphertextFromBytesArray(id, ciphertextBytes);
 

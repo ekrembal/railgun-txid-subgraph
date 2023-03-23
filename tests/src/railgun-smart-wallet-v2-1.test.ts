@@ -34,6 +34,11 @@ import {
   MOCK_WALLET_ADDRESS_2,
 } from '../util/models.test';
 import { Shield as ShieldEvent } from '../../generated/RailgunSmartWallet/RailgunSmartWallet';
+import {
+  getCiphertextData,
+  getCiphertextIV,
+  getCiphertextTag,
+} from '../../src/ciphertext';
 
 describe('railgun-smart-wallet-v2.1', () => {
   afterEach(() => {
@@ -275,8 +280,15 @@ describe('railgun-smart-wallet-v2.1', () => {
       [
         // ciphertext
         ethereum.Value.fromBytesArray([
-          Bytes.fromHexString('0x4000'),
-          Bytes.fromHexString('0x5000'),
+          Bytes.fromHexString(
+            '0x4000000000000000000300000000000000200000000000000010000000',
+          ),
+          Bytes.fromHexString(
+            '0x5000000000000000600000000050000000000000400000000000300000',
+          ),
+          Bytes.fromHexString(
+            '0x6000000000000000600000000050000100000000400000000000300000',
+          ),
         ]),
 
         // blindedSenderViewingKey
@@ -294,8 +306,15 @@ describe('railgun-smart-wallet-v2.1', () => {
       [
         // ciphertext
         ethereum.Value.fromBytesArray([
-          Bytes.fromHexString('0x014000'),
-          Bytes.fromHexString('0x015000'),
+          Bytes.fromHexString(
+            '0x014000000000000000000300000000000000200000000000000010000000',
+          ),
+          Bytes.fromHexString(
+            '0x015000000000000000600000000050000000000000400000000000300000',
+          ),
+          Bytes.fromHexString(
+            '0x016000000000000060000000005000010000000040000000000030000000',
+          ),
         ]),
 
         // blindedSenderViewingKey
@@ -341,8 +360,65 @@ describe('railgun-smart-wallet-v2.1', () => {
         BigInt.fromI32(i),
       );
 
-      // TODO: check ciphertext fields
-      // TODO: check commitment ciphertext fields
+      const ciphertextBytesArray: Bytes[] = ciphertext[i][0].toBytesArray();
+
+      assert.fieldEquals(
+        'Ciphertext',
+        expectedID,
+        'iv',
+        getCiphertextIV(ciphertextBytesArray).toHexString(),
+      );
+      assert.fieldEquals(
+        'Ciphertext',
+        expectedID,
+        'tag',
+        getCiphertextTag(ciphertextBytesArray).toHexString(),
+      );
+
+      const ciphertextDataStrings = getCiphertextData(ciphertextBytesArray).map<
+        string
+      >((byte) => byte.toHexString());
+      assert.fieldEquals(
+        'Ciphertext',
+        expectedID,
+        'data',
+        `[${ciphertextDataStrings[0]}, ${ciphertextDataStrings[1]}]`, // ex. [0x1111, 0x2222]
+      );
+
+      assert.fieldEquals(
+        'CommitmentCiphertext',
+        expectedID,
+        'ciphertext',
+        expectedID,
+      );
+      // // TODO
+      // assert.fieldEquals(
+      //   'CommitmentCiphertext',
+      //   expectedID,
+      //   'blindedSenderViewingKey',
+      //   expectedID,
+      // );
+      // // TODO
+      // assert.fieldEquals(
+      //   'CommitmentCiphertext',
+      //   expectedID,
+      //   'blindedReceiverViewingKey',
+      //   expectedID,
+      // );
+      // // TODO
+      // assert.fieldEquals(
+      //   'CommitmentCiphertext',
+      //   expectedID,
+      //   'annotationData',
+      //   expectedID,
+      // );
+      // // TODO
+      // assert.fieldEquals(
+      //   'CommitmentCiphertext',
+      //   expectedID,
+      //   'memo',
+      //   expectedID,
+      // );
 
       assert.fieldEquals(
         'TransactCommitment',

@@ -12,8 +12,13 @@ import {
   Unshield,
   Nullifier,
 } from '../generated/schema';
+import {
+  getCiphertextData,
+  getCiphertextIV,
+  getCiphertextTag,
+} from './ciphertext';
 import { getTokenHash, getTokenTypeEnum } from './token';
-import { bigIntToBytes, hexlify } from './utils';
+import { bigIntToBytes } from './utils';
 
 export const saveToken = (
   tokenType: i32,
@@ -62,11 +67,9 @@ export const saveCiphertextFromBytesArray = (
 ): Ciphertext => {
   const entity = new Ciphertext(id);
 
-  const ivTag = hexlify(ciphertext[0]);
-
-  entity.iv = Bytes.fromHexString(ivTag.substring(0, 32));
-  entity.tag = Bytes.fromHexString(ivTag.substring(32));
-  entity.data = ciphertext.slice(1);
+  entity.iv = getCiphertextIV(ciphertext);
+  entity.tag = getCiphertextTag(ciphertext);
+  entity.data = getCiphertextData(ciphertext);
 
   entity.save();
   return entity;

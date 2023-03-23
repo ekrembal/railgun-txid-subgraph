@@ -14,10 +14,6 @@ import {
 } from '../../src/utils';
 
 describe('utils', () => {
-  beforeAll(() => {});
-
-  afterAll(() => {});
-
   test('Should hexlify bytes', () => {
     assert.stringEquals(hexlify(Bytes.fromHexString('0x1234')), '1234');
   });

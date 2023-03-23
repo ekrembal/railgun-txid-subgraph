@@ -4,8 +4,9 @@ import {
   afterEach,
   clearStore,
   assert,
+  logStore,
 } from 'matchstick-as/assembly/index';
-import { BigInt, ethereum } from '@graphprotocol/graph-ts';
+import { BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
 import {
   createCommitmentBatchEvent,
   createGeneratedCommitmentBatchEvent,
@@ -16,7 +17,7 @@ import {
   handleGeneratedCommitmentBatch,
   handleNullifier,
 } from '../../src/railgun-smart-wallet';
-import { bigIntToBytes } from '../../src/utils';
+import { bigIntToBytes, padTo32Bytes } from '../../src/utils';
 import {
   assertCommonCommitmentFields,
   assertCommonFields,
@@ -28,6 +29,11 @@ import {
   MOCK_TOKEN_ERC721_HASH,
   MOCK_TOKEN_ERC721_TUPLE,
 } from '../util/models.test';
+import {
+  getCiphertextData,
+  getCiphertextIV,
+  getCiphertextTag,
+} from '../../src/ciphertext';
 
 describe('railgun-logic-v1', () => {
   afterEach(() => {
@@ -177,8 +183,15 @@ describe('railgun-logic-v1', () => {
       [
         // ciphertext
         ethereum.Value.fromUnsignedBigIntArray([
-          BigInt.fromString('4000'),
-          BigInt.fromString('5000'),
+          BigInt.fromString(
+            '4000000000000000000000000000000000000000000000000000000000',
+          ),
+          BigInt.fromString(
+            '5000000000000000000000000000000000000000000000000000000000',
+          ),
+          BigInt.fromString(
+            '6000000000000000000000000000000000000000000000000000000000',
+          ),
         ]),
         // ephemeralKeys
         ethereum.Value.fromUnsignedBigIntArray([
@@ -194,8 +207,15 @@ describe('railgun-logic-v1', () => {
       [
         // ciphertext
         ethereum.Value.fromUnsignedBigIntArray([
-          BigInt.fromString('14000'),
-          BigInt.fromString('15000'),
+          BigInt.fromString(
+            '14000000000000000000000000000000000000000000000000000000000',
+          ),
+          BigInt.fromString(
+            '15000000000000000000000000000000000000000000000000000000000',
+          ),
+          BigInt.fromString(
+            '16000000000000000000000000000000000000000000000000000000000',
+          ),
         ]),
         // ephemeralKeys
         ethereum.Value.fromUnsignedBigIntArray([
@@ -238,8 +258,53 @@ describe('railgun-logic-v1', () => {
         BigInt.fromI32(i),
       );
 
-      // TODO: check ciphertext fields
-      // TODO: check legacy commitment ciphertext fields
+      const ciphertextBytesArray: Bytes[] = ciphertext[i][0]
+        .toBigIntArray()
+        .map<Bytes>((bigint) => bigIntToBytes(bigint));
+
+      assert.fieldEquals(
+        'Ciphertext',
+        expectedID,
+        'iv',
+        getCiphertextIV(ciphertextBytesArray).toHexString(),
+      );
+      assert.fieldEquals(
+        'Ciphertext',
+        expectedID,
+        'tag',
+        getCiphertextTag(ciphertextBytesArray).toHexString(),
+      );
+
+      const ciphertextDataStrings = getCiphertextData(ciphertextBytesArray).map<
+        string
+      >((byte) => byte.toHexString());
+      assert.fieldEquals(
+        'Ciphertext',
+        expectedID,
+        'data',
+        `[${ciphertextDataStrings[0]}, ${ciphertextDataStrings[1]}]`, // ex. [0x1111, 0x2222]
+      );
+
+      assert.fieldEquals(
+        'LegacyEncryptedCommitment',
+        expectedID,
+        'ciphertext',
+        expectedID,
+      );
+      // // TODO
+      // assert.fieldEquals(
+      //   'LegacyCommitmentCiphertext',
+      //   expectedID,
+      //   'ephemeralKeys',
+      //   expectedID,
+      // );
+      // // TODO
+      // assert.fieldEquals(
+      //   'LegacyCommitmentCiphertext',
+      //   expectedID,
+      //   'memo',
+      //   expectedID,
+      // );
 
       assert.fieldEquals(
         'LegacyEncryptedCommitment',

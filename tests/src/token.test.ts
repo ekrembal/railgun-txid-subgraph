@@ -9,10 +9,6 @@ import { Bytes, BigInt } from '@graphprotocol/graph-ts';
 import { getTokenHash, getTokenTypeEnum } from '../../src/token';
 
 describe('token', () => {
-  beforeAll(() => {});
-
-  afterAll(() => {});
-
   test('Should get token hashes for all token types', () => {
     const tokenAddress = Bytes.fromHexString(
       '0x1234567890123456789012345678901234567890',
