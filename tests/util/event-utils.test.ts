@@ -121,3 +121,49 @@ export function createCommitmentBatchEvent(
 
   return event;
 }
+
+export function createShieldLegacyPreMar23(
+  treeNumber: BigInt,
+  startPosition: BigInt,
+  commitments: ethereum.Value[][],
+  shieldCiphertext: ethereum.Value[][],
+): ShieldLegacyEvent {
+  const event: ShieldLegacyEvent = changetype<ShieldLegacyEvent>(
+    newMockEvent(),
+  );
+
+  event.parameters = [];
+
+  event.parameters.push(
+    new ethereum.EventParam(
+      'treeNumber',
+      ethereum.Value.fromUnsignedBigInt(treeNumber),
+    ),
+  );
+  event.parameters.push(
+    new ethereum.EventParam(
+      'startPosition',
+      ethereum.Value.fromUnsignedBigInt(startPosition),
+    ),
+  );
+  const tupleCommitmentsArray: ethereum.Tuple[] = changetype<ethereum.Tuple[]>(
+    commitments,
+  );
+  event.parameters.push(
+    new ethereum.EventParam(
+      'commitments',
+      ethereum.Value.fromTupleArray(tupleCommitmentsArray),
+    ),
+  );
+  const tupleShieldCiphertextArray: ethereum.Tuple[] = changetype<
+    ethereum.Tuple[]
+  >(shieldCiphertext);
+  event.parameters.push(
+    new ethereum.EventParam(
+      'shieldCiphertext',
+      ethereum.Value.fromTupleArray(tupleShieldCiphertextArray),
+    ),
+  );
+
+  return event;
+}

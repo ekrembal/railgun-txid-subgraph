@@ -4,9 +4,8 @@ import {
   afterEach,
   clearStore,
   assert,
-  logStore,
 } from 'matchstick-as/assembly/index';
-import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
+import { BigInt, ethereum } from '@graphprotocol/graph-ts';
 import {
   createCommitmentBatchEvent,
   createGeneratedCommitmentBatchEvent,
@@ -160,7 +159,7 @@ describe('railgun-smart-wallet', () => {
           encryptedRandom[i][0],
         ).toHexString()}, ${bigIntToBytes(
           encryptedRandom[i][1],
-        ).toHexString()}]`,
+        ).toHexString()}]`, // ex. [0x1111, 0x2222]
       );
     }
   });

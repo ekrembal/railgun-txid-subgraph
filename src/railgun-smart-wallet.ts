@@ -62,7 +62,6 @@ export const handleGeneratedCommitmentBatch = (
       BigInt.fromString(index.toString()),
     );
     const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
-    // log.info('Commitment ID {}: {}', [i.toString(), id.toHexString()]);
 
     const tokenInfo = commitment.token;
     const token = saveToken(
