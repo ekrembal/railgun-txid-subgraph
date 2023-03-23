@@ -33,7 +33,6 @@ export const handleNullifier = (event: NullifiersEvent): void => {
   for (let i = 0; i < nullifiers.length; i++) {
     const nullifier = nullifiers[i];
     const id = idFrom2PaddedBigInts(event.params.treeNumber, nullifier);
-    // log.info('Nullifier ID {}: {}', [i.toString(), id.toHexString()]);
 
     const treeNumber = event.params.treeNumber;
     const nullifierBytes = bigIntToBytes(nullifier);

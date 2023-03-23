@@ -4,6 +4,13 @@ export const MOCK_TOKEN_ADDRESS = Address.fromString(
   '0x40FDe2952a0674a3E77707Af270af09800657293',
 );
 
+export const MOCK_WALLET_ADDRESS_1 = Address.fromString(
+  '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
+);
+export const MOCK_WALLET_ADDRESS_2 = Address.fromString(
+  '0xe8da6bf26964af9d7eed9e03e53415d37aa96046',
+);
+
 export const MOCK_TOKEN_ERC20_TUPLE: ethereum.Tuple = changetype<
   ethereum.Tuple
 >([

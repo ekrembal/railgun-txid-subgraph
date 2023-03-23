@@ -1,5 +1,5 @@
-import { log, newMockEvent } from 'matchstick-as';
-import { ethereum, Bytes, BigInt } from '@graphprotocol/graph-ts';
+import { newMockEvent } from 'matchstick-as';
+import { ethereum, Bytes, BigInt, Address } from '@graphprotocol/graph-ts';
 import {
   Nullifiers as NullifiersEvent,
   CommitmentBatch as CommitmentBatchEvent,
@@ -7,9 +7,6 @@ import {
   Nullified as NullifiedEvent,
   Transact as TransactEvent,
   Unshield as UnshieldEvent,
-  Shield as ShieldEvent,
-  Shield1 as ShieldLegacyEvent,
-  GeneratedCommitmentBatchCommitmentsStruct,
 } from '../../generated/RailgunSmartWallet/RailgunSmartWallet';
 
 export const createNullifiersEvent = (
@@ -192,6 +189,36 @@ export const createNullifiedEvent = (
       'nullifier',
       ethereum.Value.fromBytesArray(nullifiers),
     ),
+  );
+
+  return event;
+};
+
+export const createUnshieldEvent = (
+  to: Address,
+  token: ethereum.Value[],
+  amount: BigInt,
+  fee: BigInt,
+): UnshieldEvent => {
+  const event: UnshieldEvent = changetype<UnshieldEvent>(newMockEvent());
+
+  event.parameters = [];
+
+  event.parameters.push(
+    new ethereum.EventParam('to', ethereum.Value.fromAddress(to)),
+  );
+  const tupleToken: ethereum.Tuple = changetype<ethereum.Tuple>(token);
+  event.parameters.push(
+    new ethereum.EventParam('token', ethereum.Value.fromTuple(tupleToken)),
+  );
+  event.parameters.push(
+    new ethereum.EventParam(
+      'amount',
+      ethereum.Value.fromUnsignedBigInt(amount),
+    ),
+  );
+  event.parameters.push(
+    new ethereum.EventParam('fee', ethereum.Value.fromUnsignedBigInt(fee)),
   );
 
   return event;

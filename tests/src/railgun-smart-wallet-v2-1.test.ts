@@ -5,27 +5,33 @@ import {
   clearStore,
   assert,
 } from 'matchstick-as/assembly/index';
-import { BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
+import { Address, BigInt, Bytes, ethereum, log } from '@graphprotocol/graph-ts';
 import {
   createNullifiedEvent,
   createShield,
   createTransactEvent,
+  createUnshieldEvent,
 } from '../util/event-utils.test';
 import {
   handleNullified,
   handleShield,
   handleTransact,
+  handleUnshield,
 } from '../../src/railgun-smart-wallet';
 import { bigIntToBytes } from '../../src/utils';
 import {
   assertCommonCommitmentFields,
   assertCommonFields,
+  assertTokenFields,
 } from '../util/assert.test';
 import {
+  MOCK_TOKEN_ADDRESS,
   MOCK_TOKEN_ERC20_HASH,
   MOCK_TOKEN_ERC20_TUPLE,
   MOCK_TOKEN_ERC721_HASH,
   MOCK_TOKEN_ERC721_TUPLE,
+  MOCK_WALLET_ADDRESS_1,
+  MOCK_WALLET_ADDRESS_2,
 } from '../util/models.test';
 import { Shield as ShieldEvent } from '../../generated/RailgunSmartWallet/RailgunSmartWallet';
 
@@ -196,6 +202,66 @@ describe('railgun-smart-wallet-v2.1', () => {
     }
   });
 
+  test('Should handle Unshield event', () => {
+    const tos: Address[] = [MOCK_WALLET_ADDRESS_1, MOCK_WALLET_ADDRESS_2];
+    const tokens: ethereum.Value[][] = [
+      MOCK_TOKEN_ERC20_TUPLE,
+      MOCK_TOKEN_ERC721_TUPLE,
+    ];
+    const amounts: BigInt[] = [
+      BigInt.fromString('1000'),
+      BigInt.fromString('2000'),
+    ];
+    const fees: BigInt[] = [
+      BigInt.fromString('3000'),
+      BigInt.fromString('4000'),
+    ];
+
+    const events = [
+      createUnshieldEvent(tos[0], tokens[0], amounts[0], fees[0]),
+      createUnshieldEvent(tos[1], tokens[1], amounts[1], fees[1]),
+    ];
+
+    // Needs separate mock hash for separate index.
+    events[1].transaction.hash = Bytes.fromHexString(
+      '0x0101010101010101010101010101010101010101',
+    );
+
+    handleUnshield(events[0]);
+    handleUnshield(events[1]);
+
+    assert.entityCount('Token', 2);
+    assert.entityCount('Unshield', 2);
+
+    assertTokenFields(MOCK_TOKEN_ERC20_HASH, MOCK_TOKEN_ERC20_TUPLE);
+    assertTokenFields(MOCK_TOKEN_ERC721_HASH, MOCK_TOKEN_ERC721_TUPLE);
+
+    const expectedIDs = [
+      '0xa16081f360e3847006db660bae1c6d1b2e17ec2a01000000',
+      '0x010101010101010101010101010101010101010101000000',
+    ];
+
+    for (let i = 0; i < expectedIDs.length; i++) {
+      const expectedID = expectedIDs[i];
+      assertCommonFields('Unshield', expectedID, events[i]);
+
+      assert.fieldEquals('Unshield', expectedID, 'to', tos[i].toHexString());
+      assert.fieldEquals(
+        'Unshield',
+        expectedID,
+        'token',
+        [MOCK_TOKEN_ERC20_HASH, MOCK_TOKEN_ERC721_HASH][i],
+      );
+      assert.fieldEquals(
+        'Unshield',
+        expectedID,
+        'amount',
+        amounts[i].toString(),
+      );
+      assert.fieldEquals('Unshield', expectedID, 'fee', fees[i].toString());
+    }
+  });
+
   test('Should handle Transact event', () => {
     const treeNumber = BigInt.fromString('2000');
     const startPosition = BigInt.fromString('3000');
@@ -276,6 +342,7 @@ describe('railgun-smart-wallet-v2.1', () => {
       );
 
       // TODO: check ciphertext fields
+      // TODO: check commitment ciphertext fields
 
       assert.fieldEquals(
         'TransactCommitment',

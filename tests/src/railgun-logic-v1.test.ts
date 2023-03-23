@@ -239,6 +239,7 @@ describe('railgun-logic-v1', () => {
       );
 
       // TODO: check ciphertext fields
+      // TODO: check legacy commitment ciphertext fields
 
       assert.fieldEquals(
         'LegacyEncryptedCommitment',
