@@ -291,20 +291,30 @@ describe('railgun-logic-v1', () => {
         'ciphertext',
         expectedID,
       );
-      // // TODO
-      // assert.fieldEquals(
-      //   'LegacyCommitmentCiphertext',
-      //   expectedID,
-      //   'ephemeralKeys',
-      //   expectedID,
-      // );
-      // // TODO
-      // assert.fieldEquals(
-      //   'LegacyCommitmentCiphertext',
-      //   expectedID,
-      //   'memo',
-      //   expectedID,
-      // );
+      assert.fieldEquals(
+        'LegacyCommitmentCiphertext',
+        expectedID,
+        'ephemeralKeys',
+        `[${ciphertext[i][1]
+          .toBigIntArray()
+          .map<Bytes>((bigint) => bigIntToBytes(bigint))[0]
+          .toHexString()}, ${ciphertext[i][1]
+          .toBigIntArray()
+          .map<Bytes>((bigint) => bigIntToBytes(bigint))[1]
+          .toHexString()}]`, // ex. [0x1111, 0x2222]
+      );
+      assert.fieldEquals(
+        'LegacyCommitmentCiphertext',
+        expectedID,
+        'memo',
+        `[${ciphertext[i][2]
+          .toBigIntArray()
+          .map<Bytes>((bigint) => bigIntToBytes(bigint))[0]
+          .toHexString()}, ${ciphertext[i][2]
+          .toBigIntArray()
+          .map<Bytes>((bigint) => bigIntToBytes(bigint))[1]
+          .toHexString()}]`, // ex. [0x1111, 0x2222]
+      );
 
       assert.fieldEquals(
         'LegacyEncryptedCommitment',

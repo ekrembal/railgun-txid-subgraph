@@ -391,34 +391,30 @@ describe('railgun-smart-wallet-v2.1', () => {
         'ciphertext',
         expectedID,
       );
-      // // TODO
-      // assert.fieldEquals(
-      //   'CommitmentCiphertext',
-      //   expectedID,
-      //   'blindedSenderViewingKey',
-      //   expectedID,
-      // );
-      // // TODO
-      // assert.fieldEquals(
-      //   'CommitmentCiphertext',
-      //   expectedID,
-      //   'blindedReceiverViewingKey',
-      //   expectedID,
-      // );
-      // // TODO
-      // assert.fieldEquals(
-      //   'CommitmentCiphertext',
-      //   expectedID,
-      //   'annotationData',
-      //   expectedID,
-      // );
-      // // TODO
-      // assert.fieldEquals(
-      //   'CommitmentCiphertext',
-      //   expectedID,
-      //   'memo',
-      //   expectedID,
-      // );
+      assert.fieldEquals(
+        'CommitmentCiphertext',
+        expectedID,
+        'blindedSenderViewingKey',
+        ciphertext[i][1].toBytes().toHexString(),
+      );
+      assert.fieldEquals(
+        'CommitmentCiphertext',
+        expectedID,
+        'blindedReceiverViewingKey',
+        ciphertext[i][2].toBytes().toHexString(),
+      );
+      assert.fieldEquals(
+        'CommitmentCiphertext',
+        expectedID,
+        'annotationData',
+        ciphertext[i][3].toBytes().toHexString(),
+      );
+      assert.fieldEquals(
+        'CommitmentCiphertext',
+        expectedID,
+        'memo',
+        ciphertext[i][4].toBytes().toHexString(),
+      );
 
       assert.fieldEquals(
         'TransactCommitment',
