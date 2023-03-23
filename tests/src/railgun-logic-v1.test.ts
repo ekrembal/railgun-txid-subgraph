@@ -29,7 +29,7 @@ import {
   MOCK_TOKEN_ERC721_TUPLE,
 } from '../util/models.test';
 
-describe('railgun-smart-wallet', () => {
+describe('railgun-logic-v1', () => {
   afterEach(() => {
     clearStore();
   });
