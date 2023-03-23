@@ -6,8 +6,16 @@ import {
   assert,
 } from 'matchstick-as/assembly/index';
 import { BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
-import { createNullifiedEvent, createShield } from '../util/event-utils.test';
-import { handleNullified, handleShield } from '../../src/railgun-smart-wallet';
+import {
+  createNullifiedEvent,
+  createShield,
+  createTransactEvent,
+} from '../util/event-utils.test';
+import {
+  handleNullified,
+  handleShield,
+  handleTransact,
+} from '../../src/railgun-smart-wallet';
 import { bigIntToBytes } from '../../src/utils';
 import {
   assertCommonCommitmentFields,
@@ -184,6 +192,96 @@ describe('railgun-smart-wallet-v2.1', () => {
         expectedID,
         'nullifier',
         nullifiers[i].toHexString(),
+      );
+    }
+  });
+
+  test('Should handle Transact event', () => {
+    const treeNumber = BigInt.fromString('2000');
+    const startPosition = BigInt.fromString('3000');
+
+    const hash: Bytes[] = [
+      Bytes.fromHexString('0x1111'),
+      Bytes.fromHexString('0x2222'),
+    ];
+
+    const ciphertext: Array<ethereum.Value>[] = [
+      [
+        // ciphertext
+        ethereum.Value.fromBytesArray([
+          Bytes.fromHexString('0x4000'),
+          Bytes.fromHexString('0x5000'),
+        ]),
+
+        // blindedSenderViewingKey
+        ethereum.Value.fromBytes(Bytes.fromHexString('0x6000')),
+
+        // blindedReceiverViewingKey
+        ethereum.Value.fromBytes(Bytes.fromHexString('0x7000')),
+
+        // annotationData
+        ethereum.Value.fromBytes(Bytes.fromHexString('0x8000')),
+
+        // memo
+        ethereum.Value.fromBytes(Bytes.fromHexString('0x9000')),
+      ],
+      [
+        // ciphertext
+        ethereum.Value.fromBytesArray([
+          Bytes.fromHexString('0x014000'),
+          Bytes.fromHexString('0x015000'),
+        ]),
+
+        // blindedSenderViewingKey
+        ethereum.Value.fromBytes(Bytes.fromHexString('0x016000')),
+
+        // blindedReceiverViewingKey
+        ethereum.Value.fromBytes(Bytes.fromHexString('0x017000')),
+
+        // annotationData
+        ethereum.Value.fromBytes(Bytes.fromHexString('0x018000')),
+
+        // memo
+        ethereum.Value.fromBytes(Bytes.fromHexString('0x019000')),
+      ],
+    ];
+
+    const event = createTransactEvent(
+      treeNumber,
+      startPosition,
+      hash,
+      ciphertext,
+    );
+
+    handleTransact(event);
+
+    assert.entityCount('Ciphertext', 2);
+    assert.entityCount('CommitmentCiphertext', 2);
+    assert.entityCount('TransactCommitment', 2);
+
+    const expectedIDs = [
+      '0x000000000000000000000000000000000000000000000000000000000000d007000000000000000000000000000000000000000000000000000000000000b80b',
+      '0x000000000000000000000000000000000000000000000000000000000000d007000000000000000000000000000000000000000000000000000000000000b90b',
+    ];
+
+    for (let i = 0; i < expectedIDs.length; i++) {
+      const expectedID = expectedIDs[i];
+      assertCommonCommitmentFields(
+        'TransactCommitment',
+        expectedID,
+        event,
+        treeNumber,
+        startPosition,
+        BigInt.fromI32(i),
+      );
+
+      // TODO: check ciphertext fields
+
+      assert.fieldEquals(
+        'TransactCommitment',
+        expectedID,
+        'ciphertext',
+        expectedID,
       );
     }
   });

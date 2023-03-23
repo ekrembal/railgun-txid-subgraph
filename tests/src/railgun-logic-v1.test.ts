@@ -219,6 +219,7 @@ describe('railgun-logic-v1', () => {
     handleCommitmentBatch(event);
 
     assert.entityCount('Ciphertext', 2);
+    assert.entityCount('LegacyCommitmentCiphertext', 2);
     assert.entityCount('LegacyEncryptedCommitment', 2);
 
     const expectedIDs = [

@@ -12,10 +12,10 @@ import {
   GeneratedCommitmentBatchCommitmentsStruct,
 } from '../../generated/RailgunSmartWallet/RailgunSmartWallet';
 
-export function createNullifiersEvent(
+export const createNullifiersEvent = (
   treeNumber: BigInt,
   nullifiers: BigInt[],
-): NullifiersEvent {
+): NullifiersEvent => {
   const event: NullifiersEvent = changetype<NullifiersEvent>(newMockEvent());
 
   event.parameters = [];
@@ -34,14 +34,14 @@ export function createNullifiersEvent(
   );
 
   return event;
-}
+};
 
-export function createGeneratedCommitmentBatchEvent(
+export const createGeneratedCommitmentBatchEvent = (
   treeNumber: BigInt,
   startPosition: BigInt,
   commitments: ethereum.Value[][],
   encryptedRandom: BigInt[][],
-): GeneratedCommitmentBatchEvent {
+): GeneratedCommitmentBatchEvent => {
   const event: GeneratedCommitmentBatchEvent = changetype<
     GeneratedCommitmentBatchEvent
   >(newMockEvent());
@@ -77,14 +77,14 @@ export function createGeneratedCommitmentBatchEvent(
   );
 
   return event;
-}
+};
 
-export function createCommitmentBatchEvent(
+export const createCommitmentBatchEvent = (
   treeNumber: BigInt,
   startPosition: BigInt,
   hash: BigInt[],
   ciphertext: ethereum.Value[][],
-): CommitmentBatchEvent {
+): CommitmentBatchEvent => {
   const event: CommitmentBatchEvent = changetype<CommitmentBatchEvent>(
     newMockEvent(),
   );
@@ -120,7 +120,7 @@ export function createCommitmentBatchEvent(
   );
 
   return event;
-}
+};
 
 export function createShield<T extends ethereum.Event>(
   treeNumber: BigInt,
@@ -176,10 +176,10 @@ export function createShield<T extends ethereum.Event>(
   return event;
 }
 
-export function createNullifiedEvent(
+export const createNullifiedEvent = (
   treeNumber: i32,
   nullifiers: Bytes[],
-): NullifiedEvent {
+): NullifiedEvent => {
   const event: NullifiedEvent = changetype<NullifiedEvent>(newMockEvent());
 
   event.parameters = [];
@@ -195,4 +195,42 @@ export function createNullifiedEvent(
   );
 
   return event;
-}
+};
+
+export const createTransactEvent = (
+  treeNumber: BigInt,
+  startPosition: BigInt,
+  hash: Bytes[],
+  ciphertext: ethereum.Value[][],
+): TransactEvent => {
+  const event: TransactEvent = changetype<TransactEvent>(newMockEvent());
+
+  event.parameters = [];
+
+  event.parameters.push(
+    new ethereum.EventParam(
+      'treeNumber',
+      ethereum.Value.fromUnsignedBigInt(treeNumber),
+    ),
+  );
+  event.parameters.push(
+    new ethereum.EventParam(
+      'startPosition',
+      ethereum.Value.fromUnsignedBigInt(startPosition),
+    ),
+  );
+  event.parameters.push(
+    new ethereum.EventParam('hash', ethereum.Value.fromBytesArray(hash)),
+  );
+  const tupleCiphertextArray: ethereum.Tuple[] = changetype<ethereum.Tuple[]>(
+    ciphertext,
+  );
+  event.parameters.push(
+    new ethereum.EventParam(
+      'ciphertext',
+      ethereum.Value.fromTupleArray(tupleCiphertextArray),
+    ),
+  );
+
+  return event;
+};
