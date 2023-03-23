@@ -103,13 +103,12 @@ describe('railgun-smart-wallet-v2.0-legacy-shield.test', () => {
         BigInt.fromI32(i),
       );
 
-      // TODO: fix this
-      // assert.fieldEquals(
-      //   'CommitmentPreimage',
-      //   expectedID,
-      //   'npk',
-      //   bigIntToBytes(commitments[i][0].toBigInt()).toHexString(),
-      // );
+      assert.fieldEquals(
+        'CommitmentPreimage',
+        expectedID,
+        'npk',
+        commitments[i][0].toBytes().toHexString(),
+      );
       assert.fieldEquals(
         'CommitmentPreimage',
         expectedID,
