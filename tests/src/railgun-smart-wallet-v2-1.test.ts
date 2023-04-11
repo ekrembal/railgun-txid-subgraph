@@ -5,7 +5,7 @@ import {
   clearStore,
   assert,
 } from 'matchstick-as/assembly/index';
-import { Address, BigInt, Bytes, ethereum, log } from '@graphprotocol/graph-ts';
+import { Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
 import {
   createNullifiedEvent,
   createShield,
@@ -17,7 +17,7 @@ import {
   handleShield,
   handleTransact,
   handleUnshield,
-} from '../../src/railgun-smart-wallet';
+} from '../../src/railgun-smart-wallet-events';
 import { bigIntToBytes } from '../../src/utils';
 import {
   assertCommonCommitmentFields,

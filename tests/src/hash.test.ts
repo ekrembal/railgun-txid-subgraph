@@ -32,18 +32,17 @@ describe('hash', () => {
     );
 
     assert.bytesEquals(
-      bigIntToBytes(
-        getNoteHash(
+      getNoteHash(
+        1, // chainId
+        Bytes.fromHexString(
+          '0x12a1f22c8e1f7feb6923ac7118fc66aaa19ebbb1abbbba9b8a271d06b2277abd', // npk
+        ),
+        Bytes.fromHexString(
+          '0x000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec7', // token hash
+        ),
+        BigInt.fromUnsignedBytes(
           Bytes.fromHexString(
-            '0x12a1f22c8e1f7feb6923ac7118fc66aaa19ebbb1abbbba9b8a271d06b2277abd', // npk
-          ),
-          Bytes.fromHexString(
-            '0x000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec7', // token hash
-          ),
-          BigInt.fromUnsignedBytes(
-            Bytes.fromHexString(
-              '0x0000000000000000000000001b70cc71', // value
-            ),
+            '0x0000000000000000000000001b70cc71', // value
           ),
         ),
       ),

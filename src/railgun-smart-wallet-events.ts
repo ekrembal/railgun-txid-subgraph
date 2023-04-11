@@ -1,4 +1,4 @@
-import { Bytes, BigInt, log } from '@graphprotocol/graph-ts';
+import { Bytes, BigInt, log, ethereum } from '@graphprotocol/graph-ts';
 import {
   Nullifiers as NullifiersEvent,
   CommitmentBatch as CommitmentBatchEvent,
@@ -25,6 +25,7 @@ import {
 } from './entity';
 import { idFrom2PaddedBigInts, idFromEventLogIndex } from './id';
 import { getNoteHash } from './hash';
+import { chainIdForProxyContract } from './contracts';
 
 /**
  * Enable to log IDs for new entities in this file.
@@ -105,6 +106,7 @@ export function handleGeneratedCommitmentBatch(
     }
 
     const commitmentHash = getNoteHash(
+      getChainIdFromReceipt(event),
       bigIntToBytes(commitment.npk),
       token.id,
       commitment.value,
@@ -177,6 +179,10 @@ export function handleCommitmentBatch(event: CommitmentBatchEvent): void {
 // Engine V3 (Nov 2022)
 
 export function handleShieldLegacyPreMar23(event: ShieldLegacyEvent): void {
+  if (!event.receipt) {
+    throw new Error('No receipt found for ShieldLegacy event');
+  }
+
   const commitments = event.params.commitments;
 
   for (let i = 0; i < commitments.length; i++) {
@@ -212,6 +218,7 @@ export function handleShieldLegacyPreMar23(event: ShieldLegacyEvent): void {
     }
 
     const commitmentHash = getNoteHash(
+      getChainIdFromReceipt(event),
       commitment.npk,
       token.id,
       commitment.value,
@@ -378,6 +385,7 @@ export function handleShield(event: ShieldEvent): void {
     }
 
     const commitmentHash = getNoteHash(
+      getChainIdFromReceipt(event),
       commitment.npk,
       token.id,
       commitment.value,
@@ -398,3 +406,11 @@ export function handleShield(event: ShieldEvent): void {
     );
   }
 }
+
+const getChainIdFromReceipt = (event: ethereum.Event): u32 => {
+  if (!event.receipt) {
+    throw new Error('No receipt found for event');
+  }
+  const receipt = changetype<ethereum.TransactionReceipt>(event.receipt);
+  return chainIdForProxyContract(receipt.contractAddress);
+};

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+graph build --network mainnet && graph deploy --product hosted-service railgun-community/railgun-v2-ethereum; \
+graph build --network goerli && graph deploy --product hosted-service railgun-community/railgun-v2-goerli; \
+graph build --network bsc && graph deploy --product hosted-service railgun-community/railgun-v2-bsc; \
+graph build --network matic && graph deploy --product hosted-service railgun-community/railgun-v2-polygon; \
+graph build --network mumbai && graph deploy --product hosted-service railgun-community/railgun-v2-mumbai; \
+graph build --network arbitrum-one && graph deploy --product hosted-service railgun-community/railgun-v2-arbitrum; \
+graph build --network arbitrum-goerli && graph deploy --product hosted-service railgun-community/railgun-v2-arbitrum-goerli;

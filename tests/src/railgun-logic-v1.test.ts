@@ -15,7 +15,7 @@ import {
   handleCommitmentBatch,
   handleGeneratedCommitmentBatch,
   handleNullifiers,
-} from '../../src/railgun-smart-wallet';
+} from '../../src/railgun-smart-wallet-events';
 import { bigIntToBytes } from '../../src/utils';
 import {
   assertCommonCommitmentFields,

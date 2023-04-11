@@ -7,7 +7,7 @@ import {
 } from 'matchstick-as/assembly/index';
 import { BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
 import { createShield } from '../util/event-utils.test';
-import { handleShieldLegacyPreMar23 } from '../../src/railgun-smart-wallet';
+import { handleShieldLegacyPreMar23 } from '../../src/railgun-smart-wallet-events';
 import { assertCommonCommitmentFields } from '../util/assert.test';
 import {
   MOCK_TOKEN_ERC20_HASH,

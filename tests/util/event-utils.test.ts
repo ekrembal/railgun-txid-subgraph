@@ -9,6 +9,16 @@ import {
   Unshield as UnshieldEvent,
 } from '../../generated/RailgunSmartWallet/RailgunSmartWallet';
 
+const ETHEREUM_CONTRACT = Address.fromString(
+  '0xfa7093cdd9ee6932b4eb2c9e1cde7ce00b1fa4b9',
+);
+
+const addReceiptContractAddress = (event: ethereum.Event): void => {
+  changetype<ethereum.TransactionReceipt>(
+    event.receipt,
+  ).contractAddress = ETHEREUM_CONTRACT;
+};
+
 export const createNullifiersEvent = (
   treeNumber: BigInt,
   nullifiers: BigInt[],
@@ -29,6 +39,8 @@ export const createNullifiersEvent = (
       ethereum.Value.fromUnsignedBigIntArray(nullifiers),
     ),
   );
+
+  addReceiptContractAddress(event);
 
   return event;
 };
@@ -73,6 +85,8 @@ export const createGeneratedCommitmentBatchEvent = (
     ),
   );
 
+  addReceiptContractAddress(event);
+
   return event;
 };
 
@@ -115,6 +129,8 @@ export const createCommitmentBatchEvent = (
       ethereum.Value.fromTupleArray(tupleCiphertextArray),
     ),
   );
+
+  addReceiptContractAddress(event);
 
   return event;
 };
@@ -170,6 +186,8 @@ export function createShield<T extends ethereum.Event>(
     );
   }
 
+  addReceiptContractAddress(event);
+
   return event;
 }
 
@@ -190,6 +208,8 @@ export const createNullifiedEvent = (
       ethereum.Value.fromBytesArray(nullifiers),
     ),
   );
+
+  addReceiptContractAddress(event);
 
   return event;
 };
@@ -220,6 +240,8 @@ export const createUnshieldEvent = (
   event.parameters.push(
     new ethereum.EventParam('fee', ethereum.Value.fromUnsignedBigInt(fee)),
   );
+
+  addReceiptContractAddress(event);
 
   return event;
 };
@@ -258,6 +280,8 @@ export const createTransactEvent = (
       ethereum.Value.fromTupleArray(tupleCiphertextArray),
     ),
   );
+
+  addReceiptContractAddress(event);
 
   return event;
 };

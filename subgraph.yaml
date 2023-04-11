@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: RailgunSmartWallet
-    network: mainnet
+    network: arbitrum-goerli
     source:
       abi: RailgunSmartWallet
-      address: "0xfa7093cdd9ee6932b4eb2c9e1cde7ce00b1fa4b9"
-      startBlock: 14737691
+      address: '0xA0603e598F9Ac2fc7475a3fA08D0794066615D9a'
+      startBlock: 2611949
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -21,6 +21,8 @@ dataSources:
       abis:
         - name: RailgunSmartWallet
           file: ./abis/RailgunSmartWallet.json
+        - name: PoseidonT4
+          file: ./abis/PoseidonT4.json
       eventHandlers:
         - event: Nullifiers(uint256,uint256[])
           handler: handleNullifiers
@@ -28,6 +30,7 @@ dataSources:
           handler: handleCommitmentBatch
         - event: GeneratedCommitmentBatch(uint256,uint256,(uint256,(uint8,address,uint256),uint120)[],uint256[2][])
           handler: handleGeneratedCommitmentBatch
+          receipt: true
         - event: Nullified(uint16,bytes32[])
           handler: handleNullified
         - event: Transact(uint256,uint256,bytes32[],(bytes32[4],bytes32,bytes32,bytes,bytes)[])
@@ -36,25 +39,8 @@ dataSources:
           handler: handleUnshield
         - event: Shield(uint256,uint256,(bytes32,(uint8,address,uint256),uint120)[],(bytes32[3],bytes32)[])
           handler: handleShieldLegacyPreMar23
+          receipt: true
         - event: Shield(uint256,uint256,(bytes32,(uint8,address,uint256),uint120)[],(bytes32[3],bytes32)[],uint256[])
           handler: handleShield
-      file: ./src/railgun-smart-wallet.ts
-  - kind: ethereum
-    name: PoseidonT4
-    network: mainnet
-    source:
-      abi: PoseidonT4
-      address: "0xcb2ebd9fcb570db7b4f723461efce7e1f3b5b5a3"
-    mapping:
-      kind: ethereum/contract
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - NullEntity
-      abis:
-        - name: PoseidonT4
-          file: ./abis/PoseidonT4.json
-      eventHandlers:
-        - event: NullEvent()
-          handler: handleNullEvent
-      file: ./src/poseidon.ts
+          receipt: true
+      file: ./src/railgun-smart-wallet-events.ts

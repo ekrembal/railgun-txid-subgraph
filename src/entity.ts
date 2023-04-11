@@ -140,7 +140,7 @@ export const saveLegacyGeneratedCommitment = (
   transactionHash: Bytes,
   treeNumber: BigInt,
   treePosition: BigInt,
-  commitmentHash: BigInt,
+  commitmentHash: Bytes,
   preimage: CommitmentPreimage,
   encryptedRandom: BigInt[],
 ): LegacyGeneratedCommitment => {
@@ -155,7 +155,7 @@ export const saveLegacyGeneratedCommitment = (
   entity.treePosition = treePosition.toI32();
 
   // Custom values: GeneratedCommitmentBatch event
-  entity.hash = bigIntToBytes(commitmentHash);
+  entity.hash = commitmentHash;
   entity.preimage = preimage.id;
   entity.encryptedRandom = encryptedRandom.map<Bytes>((e) => bigIntToBytes(e));
 
@@ -198,7 +198,7 @@ export const saveShieldCommitment = (
   transactionHash: Bytes,
   treeNumber: BigInt,
   treePosition: BigInt,
-  commitmentHash: BigInt,
+  commitmentHash: Bytes,
   preimage: CommitmentPreimage,
   encryptedBundle: Bytes[],
   shieldKey: Bytes,
@@ -215,7 +215,7 @@ export const saveShieldCommitment = (
   entity.treePosition = treePosition.toI32();
 
   // Custom values: Shield event
-  entity.hash = bigIntToBytes(commitmentHash);
+  entity.hash = commitmentHash;
   entity.preimage = preimage.id;
   entity.encryptedBundle = encryptedBundle;
   entity.shieldKey = shieldKey;
