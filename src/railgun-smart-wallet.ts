@@ -24,6 +24,7 @@ import {
   saveUnshield,
 } from './entity';
 import { idFrom2PaddedBigInts, idFromEventLogIndex } from './id';
+import { getNoteHash } from './hash';
 
 /**
  * Enable to log IDs for new entities in this file.
@@ -103,6 +104,12 @@ export function handleGeneratedCommitmentBatch(
       );
     }
 
+    const commitmentHash = getNoteHash(
+      bigIntToBytes(commitment.npk),
+      token.id,
+      commitment.value,
+    );
+
     saveLegacyGeneratedCommitment(
       id,
       event.block.number,
@@ -110,6 +117,7 @@ export function handleGeneratedCommitmentBatch(
       event.transaction.hash,
       event.params.treeNumber,
       treePosition,
+      commitmentHash,
       preimage,
       event.params.encryptedRandom[index],
     );
@@ -160,6 +168,7 @@ export function handleCommitmentBatch(event: CommitmentBatchEvent): void {
       event.transaction.hash,
       event.params.treeNumber,
       treePosition,
+      event.params.hash[i],
       legacyCommitmentCiphertext,
     );
   }
@@ -202,6 +211,12 @@ export function handleShieldLegacyPreMar23(event: ShieldLegacyEvent): void {
       ]);
     }
 
+    const commitmentHash = getNoteHash(
+      commitment.npk,
+      token.id,
+      commitment.value,
+    );
+
     saveShieldCommitment(
       id,
       event.block.number,
@@ -209,6 +224,7 @@ export function handleShieldLegacyPreMar23(event: ShieldLegacyEvent): void {
       event.transaction.hash,
       event.params.treeNumber,
       treePosition,
+      commitmentHash,
       preimage,
       event.params.shieldCiphertext[index].encryptedBundle,
       event.params.shieldCiphertext[index].shieldKey,
@@ -259,6 +275,7 @@ export function handleTransact(event: TransactEvent): void {
       event.transaction.hash,
       event.params.treeNumber,
       treePosition,
+      event.params.hash[i],
       commitmentCiphertext,
     );
   }
@@ -360,6 +377,12 @@ export function handleShield(event: ShieldEvent): void {
       ]);
     }
 
+    const commitmentHash = getNoteHash(
+      commitment.npk,
+      token.id,
+      commitment.value,
+    );
+
     saveShieldCommitment(
       id,
       event.block.number,
@@ -367,6 +390,7 @@ export function handleShield(event: ShieldEvent): void {
       event.transaction.hash,
       event.params.treeNumber,
       treePosition,
+      commitmentHash,
       preimage,
       event.params.shieldCiphertext[index].encryptedBundle,
       event.params.shieldCiphertext[index].shieldKey,

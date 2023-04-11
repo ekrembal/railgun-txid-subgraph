@@ -3,6 +3,18 @@
     "RailgunSmartWallet": {
       "address": "0xfa7093cdd9ee6932b4eb2c9e1cde7ce00b1fa4b9",
       "startBlock": 14737691
+    },
+    "PoseidonT4": {
+      "address": "0xcb2ebd9fcb570db7b4f723461efce7e1f3b5b5a3"
+    }
+  },
+  "goerli": {
+    "RailgunSmartWallet": {
+      "address": "0xe8bEa99BB438C2f3D533604D33258d74d5eE4824",
+      "startBlock": 7795991
+    },
+    "PoseidonT4": {
+      "address": "0xD72bEfcbdDd9615E90887b822Daa0115e751407a"
     }
   }
 }

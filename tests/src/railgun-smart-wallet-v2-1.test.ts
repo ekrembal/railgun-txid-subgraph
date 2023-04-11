@@ -38,6 +38,7 @@ import {
   getCiphertextIV,
   getCiphertextTag,
 } from '../../src/ciphertext';
+import { createMockPoseidonT4Call } from '../util/mock-calls.test';
 
 describe('railgun-smart-wallet-v2.1', () => {
   afterEach(() => {
@@ -71,6 +72,20 @@ describe('railgun-smart-wallet-v2.1', () => {
         ethereum.Value.fromUnsignedBigInt(BigInt.fromString('4800')),
       ],
     ];
+
+    for (let i = 0; i < commitments.length; i++) {
+      const commitment = commitments[i];
+      createMockPoseidonT4Call(
+        BigInt.fromUnsignedBytes(commitment[0].toBytes()),
+        i === 0
+          ? BigInt.fromUnsignedBytes(Bytes.fromHexString(MOCK_TOKEN_ERC20_HASH))
+          : BigInt.fromUnsignedBytes(
+              Bytes.fromHexString(MOCK_TOKEN_ERC721_HASH),
+            ),
+        commitment[2].toBigInt(),
+        hash[i],
+      );
+    }
 
     const shieldCiphertext: Array<ethereum.Value>[] = [
       [
@@ -123,6 +138,7 @@ describe('railgun-smart-wallet-v2.1', () => {
         treeNumber,
         startPosition,
         BigInt.fromI32(i),
+        hash[i],
       );
 
       assert.fieldEquals(
@@ -357,6 +373,7 @@ describe('railgun-smart-wallet-v2.1', () => {
         treeNumber,
         startPosition,
         BigInt.fromI32(i),
+        BigInt.fromUnsignedBytes(hash[i]),
       );
 
       const ciphertextBytesArray: Bytes[] = ciphertext[i][0].toBytesArray();

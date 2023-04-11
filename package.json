@@ -2,7 +2,7 @@
   "name": "subgraph-v2-ethereum",
   "license": "MIT",
   "scripts": {
-    "test": "graph test src -v 0.5.2"
+    "test": "graph test src -v 0.5.2 -r"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.46.1",

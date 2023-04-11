@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: RailgunSmartWallet
-    network: mainnet
+    network: goerli
     source:
-      address: "0xfa7093cdd9ee6932b4eb2c9e1cde7ce00b1fa4b9"
       abi: RailgunSmartWallet
-      startBlock: 14737691
+      address: "0xe8bEa99BB438C2f3D533604D33258d74d5eE4824"
+      startBlock: 7795991
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -39,3 +39,22 @@ dataSources:
         - event: Shield(uint256,uint256,(bytes32,(uint8,address,uint256),uint120)[],(bytes32[3],bytes32)[],uint256[])
           handler: handleShield
       file: ./src/railgun-smart-wallet.ts
+  - kind: ethereum
+    name: PoseidonT4
+    network: goerli
+    source:
+      abi: PoseidonT4
+      address: "0xD72bEfcbdDd9615E90887b822Daa0115e751407a"
+    mapping:
+      kind: ethereum/contract
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - NullEntity
+      abis:
+        - name: PoseidonT4
+          file: ./abis/PoseidonT4.json
+      eventHandlers:
+        - event: NullEvent()
+          handler: handleNullEvent
+      file: ./src/poseidon.ts

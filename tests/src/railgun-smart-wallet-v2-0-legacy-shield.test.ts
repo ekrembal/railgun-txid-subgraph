@@ -17,6 +17,7 @@ import {
 } from '../util/models.test';
 import { bigIntToBytes } from '../../src/utils';
 import { Shield1 as LegacyShieldEvent } from '../../generated/RailgunSmartWallet/RailgunSmartWallet';
+import { createMockPoseidonT4Call } from '../util/mock-calls.test';
 
 describe('railgun-smart-wallet-v2.0-legacy-shield', () => {
   afterEach(() => {
@@ -50,6 +51,20 @@ describe('railgun-smart-wallet-v2.0-legacy-shield', () => {
         ethereum.Value.fromUnsignedBigInt(BigInt.fromString('4800')),
       ],
     ];
+
+    for (let i = 0; i < commitments.length; i++) {
+      const commitment = commitments[i];
+      createMockPoseidonT4Call(
+        BigInt.fromUnsignedBytes(commitment[0].toBytes()),
+        i === 0
+          ? BigInt.fromUnsignedBytes(Bytes.fromHexString(MOCK_TOKEN_ERC20_HASH))
+          : BigInt.fromUnsignedBytes(
+              Bytes.fromHexString(MOCK_TOKEN_ERC721_HASH),
+            ),
+        commitment[2].toBigInt(),
+        hash[i],
+      );
+    }
 
     const shieldCiphertext: Array<ethereum.Value>[] = [
       [
@@ -100,6 +115,7 @@ describe('railgun-smart-wallet-v2.0-legacy-shield', () => {
         treeNumber,
         startPosition,
         BigInt.fromI32(i),
+        hash[i],
       );
 
       assert.fieldEquals(

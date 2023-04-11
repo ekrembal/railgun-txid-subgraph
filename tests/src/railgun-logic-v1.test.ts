@@ -33,6 +33,7 @@ import {
   getCiphertextIV,
   getCiphertextTag,
 } from '../../src/ciphertext';
+import { createMockPoseidonT4Call } from '../util/mock-calls.test';
 
 describe('railgun-logic-v1', () => {
   afterEach(() => {
@@ -76,6 +77,11 @@ describe('railgun-logic-v1', () => {
     const treeNumber = BigInt.fromString('2000');
     const startPosition = BigInt.fromString('3000');
 
+    const hash: BigInt[] = [
+      BigInt.fromString('1111'),
+      BigInt.fromString('2222'),
+    ];
+
     const commitments: Array<ethereum.Value>[] = [
       [
         // npk
@@ -94,6 +100,21 @@ describe('railgun-logic-v1', () => {
         ethereum.Value.fromUnsignedBigInt(BigInt.fromString('4800')),
       ],
     ];
+
+    for (let i = 0; i < commitments.length; i++) {
+      const commitment = commitments[i];
+      createMockPoseidonT4Call(
+        BigInt.fromUnsignedBytes(commitment[0].toBytes()),
+        i === 0
+          ? BigInt.fromUnsignedBytes(Bytes.fromHexString(MOCK_TOKEN_ERC20_HASH))
+          : BigInt.fromUnsignedBytes(
+              Bytes.fromHexString(MOCK_TOKEN_ERC721_HASH),
+            ),
+        commitment[2].toBigInt(),
+        hash[i],
+      );
+    }
+
     const encryptedRandom = [
       [BigInt.fromString('10000'), BigInt.fromString('11000')],
       [BigInt.fromString('12000'), BigInt.fromString('13000')],
@@ -128,6 +149,7 @@ describe('railgun-logic-v1', () => {
         treeNumber,
         startPosition,
         BigInt.fromI32(i),
+        hash[i],
       );
 
       assert.fieldEquals(
@@ -255,6 +277,7 @@ describe('railgun-logic-v1', () => {
         treeNumber,
         startPosition,
         BigInt.fromI32(i),
+        hash[i],
       );
 
       const ciphertextBytesArray: Bytes[] = ciphertext[i][0]
@@ -375,6 +398,7 @@ describe('railgun-logic-v1', () => {
       treeNumber,
       startPosition,
       BigInt.fromString('0'),
+      hash[0],
     );
   });
 });
