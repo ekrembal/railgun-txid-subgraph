@@ -3,7 +3,8 @@ import { Bytes, BigInt, ByteArray } from '@graphprotocol/graph-ts';
 import {
   bigIntToBytes,
   hexlify,
-  padTo32Bytes,
+  padTo32BytesEnd,
+  padTo32BytesStart,
   reverseBytes,
 } from '../../src/utils';
 
@@ -12,9 +13,18 @@ describe('utils', () => {
     assert.stringEquals(hexlify(Bytes.fromHexString('0x1234')), '1234');
   });
 
-  test('Should pad to 32 bytes', () => {
+  test('Should pad to 32 bytes - end', () => {
     assert.bytesEquals(
-      padTo32Bytes(Bytes.fromHexString('0x1234')),
+      padTo32BytesEnd(Bytes.fromHexString('0x1234')),
+      Bytes.fromHexString(
+        '0x1234000000000000000000000000000000000000000000000000000000000000',
+      ),
+    );
+  });
+
+  test('Should pad to 32 bytes - start', () => {
+    assert.bytesEquals(
+      padTo32BytesStart(Bytes.fromHexString('0x1234')),
       Bytes.fromHexString(
         '0x0000000000000000000000000000000000000000000000000000000000001234',
       ),

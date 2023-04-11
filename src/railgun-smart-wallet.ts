@@ -1,4 +1,4 @@
-import { Bytes, BigInt } from '@graphprotocol/graph-ts';
+import { Bytes, BigInt, log } from '@graphprotocol/graph-ts';
 import {
   Nullifiers as NullifiersEvent,
   CommitmentBatch as CommitmentBatchEvent,
@@ -25,6 +25,11 @@ import {
 } from './entity';
 import { idFrom2PaddedBigInts, idFromEventLogIndex } from './id';
 
+/**
+ * Enable to log IDs for new entities in this file.
+ */
+const SHOULD_DEBUG_LOG = false;
+
 // Original deployment (May 2022)
 
 export function handleNullifiers(event: NullifiersEvent): void {
@@ -36,6 +41,15 @@ export function handleNullifiers(event: NullifiersEvent): void {
 
     const treeNumber = event.params.treeNumber;
     const nullifierBytes = bigIntToBytes(nullifier);
+
+    if (SHOULD_DEBUG_LOG) {
+      log.debug('Nullifier: id {}, block {}, hash {}, treeNumber {}', [
+        id.toHexString(),
+        event.block.number.toString(),
+        event.transaction.hash.toHexString(),
+        event.params.treeNumber.toString(),
+      ]);
+    }
 
     saveNullifier(
       id,
@@ -76,6 +90,19 @@ export function handleGeneratedCommitmentBatch(
       commitment.value,
     );
 
+    if (SHOULD_DEBUG_LOG) {
+      log.debug(
+        'LegacyGeneratedCommitment: id {}, block {}, hash {}, treeNumber {}, treePosition {}',
+        [
+          id.toHexString(),
+          event.block.number.toString(),
+          event.transaction.hash.toHexString(),
+          event.params.treeNumber.toString(),
+          treePosition.toString(),
+        ],
+      );
+    }
+
     saveLegacyGeneratedCommitment(
       id,
       event.block.number,
@@ -112,6 +139,19 @@ export function handleCommitmentBatch(event: CommitmentBatchEvent): void {
       ciphertextStruct.ephemeralKeys,
       ciphertextStruct.memo,
     );
+
+    if (SHOULD_DEBUG_LOG) {
+      log.debug(
+        'LegacyEncryptedCommitment: id {}, block {}, hash {}, treeNumber {}, treePosition {}',
+        [
+          id.toHexString(),
+          event.block.number.toString(),
+          event.transaction.hash.toHexString(),
+          event.params.treeNumber.toString(),
+          treePosition.toString(),
+        ],
+      );
+    }
 
     saveLegacyEncryptedCommitment(
       id,
@@ -152,6 +192,15 @@ export function handleShieldLegacyPreMar23(event: ShieldLegacyEvent): void {
       token,
       commitment.value,
     );
+
+    if (SHOULD_DEBUG_LOG) {
+      log.debug('Shield: id {}, block {}, hash {}, treeNumber {}', [
+        id.toHexString(),
+        event.block.number.toString(),
+        event.transaction.hash.toHexString(),
+        event.params.treeNumber.toString(),
+      ]);
+    }
 
     saveShieldCommitment(
       id,
@@ -194,6 +243,15 @@ export function handleTransact(event: TransactEvent): void {
       ciphertextStruct.memo,
     );
 
+    if (SHOULD_DEBUG_LOG) {
+      log.debug('Transact: id {}, block {}, hash {}, treeNumber {}', [
+        id.toHexString(),
+        event.block.number.toString(),
+        event.transaction.hash.toHexString(),
+        event.params.treeNumber.toString(),
+      ]);
+    }
+
     saveTransactCommitment(
       id,
       event.block.number,
@@ -215,6 +273,14 @@ export function handleUnshield(event: UnshieldEvent): void {
     tokenInfo.tokenAddress,
     tokenInfo.tokenSubID,
   );
+
+  if (SHOULD_DEBUG_LOG) {
+    log.debug('Unshield: id {}, block {}, hash {}', [
+      id.toHexString(),
+      event.block.number.toString(),
+      event.transaction.hash.toHexString(),
+    ]);
+  }
 
   saveUnshield(
     id,
@@ -238,6 +304,14 @@ export function handleNullified(event: NullifiedEvent): void {
       BigInt.fromString(event.params.treeNumber.toString()),
       BigInt.fromUnsignedBytes(nullifier),
     );
+
+    if (SHOULD_DEBUG_LOG) {
+      log.debug('Nullifier: id {}, block {}, hash {}', [
+        id.toHexString(),
+        event.block.number.toString(),
+        event.transaction.hash.toHexString(),
+      ]);
+    }
 
     saveNullifier(
       id,
@@ -277,6 +351,14 @@ export function handleShield(event: ShieldEvent): void {
       token,
       commitment.value,
     );
+
+    if (SHOULD_DEBUG_LOG) {
+      log.debug('Shield: id {}, block {}, hash {}', [
+        id.toHexString(),
+        event.block.number.toString(),
+        event.transaction.hash.toHexString(),
+      ]);
+    }
 
     saveShieldCommitment(
       id,

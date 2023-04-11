@@ -1,5 +1,5 @@
 import { Bytes, crypto, BigInt } from '@graphprotocol/graph-ts';
-import { bigIntToBytes, padTo32Bytes, reverseBytes } from './utils';
+import { bigIntToBytes, padTo32BytesStart, reverseBytes } from './utils';
 
 const SNARK_PRIME_BIG_INT = BigInt.fromString(
   '21888242871839275222246405745257275088548364400416034343698204186575808495617',
@@ -10,11 +10,11 @@ const getTokenDataHashNFT = (
   tokenAddress: Bytes,
   tokenSubID: BigInt,
 ): Bytes => {
-  const tokenTypeBytes = padTo32Bytes(
+  const tokenTypeBytes = padTo32BytesStart(
     bigIntToBytes(BigInt.fromString(tokenType.toString())),
   );
-  const tokenAddressBytes = padTo32Bytes(tokenAddress);
-  const tokenSubIDBytes = padTo32Bytes(
+  const tokenAddressBytes = padTo32BytesStart(tokenAddress);
+  const tokenSubIDBytes = padTo32BytesStart(
     bigIntToBytes(BigInt.fromString(tokenSubID.toString())),
   );
 
@@ -39,7 +39,7 @@ export const getTokenHash = (
 ): Bytes => {
   switch (tokenType) {
     case 0: // TokenType.ERC20:
-      return padTo32Bytes(tokenAddress);
+      return padTo32BytesStart(tokenAddress);
     case 1: // TokenType.ERC721:
     case 2: // TokenType.ERC1155:
       return getTokenDataHashNFT(tokenType, tokenAddress, tokenSubID);

@@ -4,7 +4,7 @@ import {
   test,
   newMockEvent,
 } from 'matchstick-as/assembly/index';
-import { BigInt, Bytes } from '@graphprotocol/graph-ts';
+import { BigInt, Bytes, log } from '@graphprotocol/graph-ts';
 import { idFrom2PaddedBigInts, idFromEventLogIndex } from '../../src/id';
 
 describe('id', () => {
@@ -12,9 +12,30 @@ describe('id', () => {
     assert.bytesEquals(
       idFrom2PaddedBigInts(BigInt.fromString('2'), BigInt.fromString('3')),
       Bytes.fromHexString(
-        '0x00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003',
+        '0x02000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000',
       ),
     );
+  });
+
+  test('Should create separate IDs for full merkletree', () => {
+    const ids: Bytes[] = [];
+
+    const startPosition = BigInt.fromString('2');
+
+    for (let i = -2; i < 400; i++) {
+      const bytes = idFrom2PaddedBigInts(
+        BigInt.fromString('0'),
+        startPosition.plus(BigInt.fromString(i.toString())),
+      );
+
+      // Not equal to any previous ID
+      for (let j = 0; j < ids.length; j++) {
+        assert.assertTrue(bytes.toHexString() !== ids[j].toHexString());
+      }
+
+      // log.debug('bytes: {}', [bytes.toHexString()]);
+      ids.push(bytes);
+    }
   });
 
   test('Should create ID from event log index', () => {
