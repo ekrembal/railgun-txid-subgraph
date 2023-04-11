@@ -23,11 +23,11 @@ dataSources:
           file: ./abis/RailgunSmartWallet.json
       eventHandlers:
         - event: Nullifiers(uint256,uint256[])
-          handler: handlerNullifiers
+          handler: handleNullifiers
         - event: CommitmentBatch(uint256,uint256,uint256[],(uint256[4],uint256[2],uint256[])[])
-          handler: handlerCommitmentBatch
+          handler: handleCommitmentBatch
         - event: GeneratedCommitmentBatch(uint256,uint256,(uint256,(uint8,address,uint256),uint120)[],uint256[2][])
-          handler: handlerGeneratedCommitmentBatch
+          handler: handleGeneratedCommitmentBatch
         - event: Nullified(uint16,bytes32[])
           handler: handleNullified
         - event: Transact(uint256,uint256,bytes32[],(bytes32[4],bytes32,bytes32,bytes,bytes)[])

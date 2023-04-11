@@ -14,7 +14,7 @@ import {
 import {
   handleCommitmentBatch,
   handleGeneratedCommitmentBatch,
-  handleNullifier,
+  handleNullifiers,
 } from '../../src/railgun-smart-wallet';
 import { bigIntToBytes, padTo32Bytes } from '../../src/utils';
 import {
@@ -44,7 +44,7 @@ describe('railgun-logic-v1', () => {
     const nullifiers = [BigInt.fromString('3000'), BigInt.fromString('4000')];
     const event = createNullifiersEvent(treeNumber, nullifiers);
 
-    handleNullifier(event);
+    handleNullifiers(event);
 
     assert.entityCount('Nullifier', 2);
 

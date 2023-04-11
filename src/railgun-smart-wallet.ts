@@ -27,7 +27,7 @@ import { idFrom2PaddedBigInts, idFromEventLogIndex } from './id';
 
 // Original deployment (May 2022)
 
-export const handleNullifier = (event: NullifiersEvent): void => {
+export const handleNullifiers = (event: NullifiersEvent): void => {
   const nullifiers = event.params.nullifier;
 
   for (let i = 0; i < nullifiers.length; i++) {
