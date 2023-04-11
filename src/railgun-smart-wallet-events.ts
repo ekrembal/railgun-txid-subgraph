@@ -1,4 +1,4 @@
-import { Bytes, BigInt, log, ethereum } from '@graphprotocol/graph-ts';
+import { Bytes, BigInt, log, ethereum, Address } from '@graphprotocol/graph-ts';
 import {
   Nullifiers as NullifiersEvent,
   CommitmentBatch as CommitmentBatchEvent,
@@ -408,9 +408,13 @@ export function handleShield(event: ShieldEvent): void {
 }
 
 const getChainIdFromReceipt = (event: ethereum.Event): u32 => {
-  if (!event.receipt) {
-    throw new Error('No receipt found for event');
+  if (event.receipt) {
+    const receipt = changetype<ethereum.TransactionReceipt>(event.receipt);
+    return chainIdForProxyContract(receipt.contractAddress);
   }
-  const receipt = changetype<ethereum.TransactionReceipt>(event.receipt);
-  return chainIdForProxyContract(receipt.contractAddress);
+  if (event.transaction.to) {
+    const toAddress = changetype<Address>(event.transaction.to);
+    return chainIdForProxyContract(toAddress);
+  }
+  throw new Error('No contract address found for transaction');
 };

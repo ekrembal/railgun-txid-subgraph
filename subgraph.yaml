@@ -7,7 +7,7 @@ dataSources:
     network: arbitrum-goerli
     source:
       abi: RailgunSmartWallet
-      address: '0xA0603e598F9Ac2fc7475a3fA08D0794066615D9a'
+      address: "0xA0603e598F9Ac2fc7475a3fA08D0794066615D9a"
       startBlock: 2611949
     mapping:
       kind: ethereum/events

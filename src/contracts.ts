@@ -20,12 +20,8 @@ export const getPoseidonT4ContractAddress = (chainId: u32): string => {
   throw new Error(`Unrecognized chain ID: ${chainId.toString()}`);
 };
 
-export const chainIdForProxyContract = (address: Address | null): u32 => {
-  if (address === null) {
-    throw new Error('Address from receipt is null');
-  }
-
-  const str: string = address.toHexString();
+export const chainIdForProxyContract = (address: Address): u32 => {
+  const str = address.toHexString();
 
   // Cannot use a switch with strings...
 
