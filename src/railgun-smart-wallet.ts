@@ -9,7 +9,7 @@ import {
   Shield as ShieldEvent,
   Shield1 as ShieldLegacyEvent,
 } from '../generated/RailgunSmartWallet/RailgunSmartWallet';
-import { bigIntToBytes, padTo32Bytes } from './utils';
+import { bigIntToBytes } from './utils';
 import {
   saveCiphertextFromBytesArray,
   saveCommitmentCiphertext,
@@ -27,7 +27,7 @@ import { idFrom2PaddedBigInts, idFromEventLogIndex } from './id';
 
 // Original deployment (May 2022)
 
-export const handleNullifiers = (event: NullifiersEvent): void => {
+export function handleNullifiers(event: NullifiersEvent): void {
   const nullifiers = event.params.nullifier;
 
   for (let i = 0; i < nullifiers.length; i++) {
@@ -46,11 +46,11 @@ export const handleNullifiers = (event: NullifiersEvent): void => {
       nullifierBytes,
     );
   }
-};
+}
 
-export const handleGeneratedCommitmentBatch = (
+export function handleGeneratedCommitmentBatch(
   event: GeneratedCommitmentBatchEvent,
-): void => {
+): void {
   const commitments = event.params.commitments;
 
   for (let i = 0; i < commitments.length; i++) {
@@ -87,9 +87,9 @@ export const handleGeneratedCommitmentBatch = (
       event.params.encryptedRandom[index],
     );
   }
-};
+}
 
-export const handleCommitmentBatch = (event: CommitmentBatchEvent): void => {
+export function handleCommitmentBatch(event: CommitmentBatchEvent): void {
   const ciphertextStructs = event.params.ciphertext;
 
   for (let i = 0; i < ciphertextStructs.length; i++) {
@@ -123,11 +123,11 @@ export const handleCommitmentBatch = (event: CommitmentBatchEvent): void => {
       legacyCommitmentCiphertext,
     );
   }
-};
+}
 
 // Engine V3 (Nov 2022)
 
-export const handleShieldLegacyPreMar23 = (event: ShieldLegacyEvent): void => {
+export function handleShieldLegacyPreMar23(event: ShieldLegacyEvent): void {
   const commitments = event.params.commitments;
 
   for (let i = 0; i < commitments.length; i++) {
@@ -166,9 +166,9 @@ export const handleShieldLegacyPreMar23 = (event: ShieldLegacyEvent): void => {
       null, // No fee in legacy shield
     );
   }
-};
+}
 
-export const handleTransact = (event: TransactEvent): void => {
+export function handleTransact(event: TransactEvent): void {
   const ciphertextStructs = event.params.ciphertext;
 
   for (let i = 0; i < ciphertextStructs.length; i++) {
@@ -204,9 +204,9 @@ export const handleTransact = (event: TransactEvent): void => {
       commitmentCiphertext,
     );
   }
-};
+}
 
-export const handleUnshield = (event: UnshieldEvent): void => {
+export function handleUnshield(event: UnshieldEvent): void {
   const id = idFromEventLogIndex(event);
 
   const tokenInfo = event.params.token;
@@ -226,9 +226,9 @@ export const handleUnshield = (event: UnshieldEvent): void => {
     event.params.amount,
     event.params.fee,
   );
-};
+}
 
-export const handleNullified = (event: NullifiedEvent): void => {
+export function handleNullified(event: NullifiedEvent): void {
   const nullifiers = event.params.nullifier;
 
   for (let i = 0; i < nullifiers.length; i++) {
@@ -248,11 +248,11 @@ export const handleNullified = (event: NullifiedEvent): void => {
       nullifier,
     );
   }
-};
+}
 
 // New Shield event (Mar 2023)
 
-export const handleShield = (event: ShieldEvent): void => {
+export function handleShield(event: ShieldEvent): void {
   const commitments = event.params.commitments;
 
   for (let i = 0; i < commitments.length; i++) {
@@ -291,4 +291,4 @@ export const handleShield = (event: ShieldEvent): void => {
       event.params.fees[index],
     );
   }
-};
+}
