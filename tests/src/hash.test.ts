@@ -1,11 +1,13 @@
 import { assert, describe, test } from 'matchstick-as/assembly';
-import { BigInt, Bytes } from '@graphprotocol/graph-ts';
+import { BigInt, Bytes, log } from '@graphprotocol/graph-ts';
 import { getNoteHash } from '../../src/hash';
 import { bigIntToBytes } from '../../src/utils';
 import { createMockPoseidonT4Call } from '../util/mock-calls.test';
 
 describe('hash', () => {
   test('Should create note hash for live shield commitment', () => {
+    // NOTE: This mock is used in the test, so the hash is not computed.
+    // This test therefore only really tests the type conversions.
     createMockPoseidonT4Call(
       BigInt.fromUnsignedBytes(
         Bytes.fromHexString(
@@ -46,7 +48,7 @@ describe('hash', () => {
         ),
       ),
       Bytes.fromHexString(
-        '0x04300939ad6f444712784a719c6d0bbe1b49a0b4d16983a6324bbbac136a83c7',
+        '0x04300939ad6f444712784a719c6d0bbe1b49a0b4d16983a6324bbbac136a83c7', // hash
       ),
     );
   });

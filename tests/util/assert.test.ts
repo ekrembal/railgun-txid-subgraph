@@ -1,7 +1,7 @@
 import { ethereum, BigInt } from '@graphprotocol/graph-ts';
 import { assert } from 'matchstick-as';
 import { getTokenTypeEnum } from '../../src/token';
-import { padHexStringToEven } from '../../src/utils';
+import { bigIntToBytes, padHexStringToEven } from '../../src/utils';
 
 export const assertCommonFields = (
   entityType: string,
@@ -50,7 +50,7 @@ export const assertCommonCommitmentFields = (
     startPosition.plus(i).toString(),
   );
 
-  assert.fieldEquals(entityType, id, 'hash', hash.toString());
+  assert.fieldEquals(entityType, id, 'hash', bigIntToBytes(hash).toHexString());
 };
 
 export const assertTokenFields = (

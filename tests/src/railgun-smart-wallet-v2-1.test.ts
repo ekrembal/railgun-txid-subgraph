@@ -50,8 +50,8 @@ describe('railgun-smart-wallet-v2.1', () => {
     const startPosition = BigInt.fromString('3000');
 
     const hash: BigInt[] = [
-      BigInt.fromString('1111'),
-      BigInt.fromString('2222'),
+      BigInt.fromString('4444'),
+      BigInt.fromString('5555'),
     ];
 
     const commitments: Array<ethereum.Value>[] = [
@@ -287,8 +287,8 @@ describe('railgun-smart-wallet-v2.1', () => {
     const startPosition = BigInt.fromString('3000');
 
     const hash: Bytes[] = [
-      Bytes.fromHexString('0x1111'),
-      Bytes.fromHexString('0x2222'),
+      Bytes.fromHexString('0x4444'),
+      Bytes.fromHexString('0x5555'),
     ];
 
     const ciphertext: Array<ethereum.Value>[] = [
@@ -373,7 +373,7 @@ describe('railgun-smart-wallet-v2.1', () => {
         treeNumber,
         startPosition,
         BigInt.fromI32(i),
-        BigInt.fromUnsignedBytes(hash[i]),
+        BigInt.fromSignedBytes(hash[i]),
       );
 
       const ciphertextBytesArray: Bytes[] = ciphertext[i][0].toBytesArray();
