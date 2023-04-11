@@ -6,7 +6,7 @@ dataSources:
     name: RailgunSmartWallet
     network: mainnet
     source:
-      address: '0xfa7093cdd9ee6932b4eb2c9e1cde7ce00b1fa4b9'
+      address: "0xfa7093cdd9ee6932b4eb2c9e1cde7ce00b1fa4b9"
       abi: RailgunSmartWallet
       startBlock: 14737691
     mapping:
@@ -22,14 +22,12 @@ dataSources:
         - name: RailgunSmartWallet
           file: ./abis/RailgunSmartWallet.json
       eventHandlers:
-        # Original deployment (May 2022)
         - event: Nullifiers(uint256,uint256[])
           handler: handlerNullifiers
         - event: CommitmentBatch(uint256,uint256,uint256[],(uint256[4],uint256[2],uint256[])[])
           handler: handlerCommitmentBatch
         - event: GeneratedCommitmentBatch(uint256,uint256,(uint256,(uint8,address,uint256),uint120)[],uint256[2][])
           handler: handlerGeneratedCommitmentBatch
-        # Engine V3 (Nov 2022)
         - event: Nullified(uint16,bytes32[])
           handler: handleNullified
         - event: Transact(uint256,uint256,bytes32[],(bytes32[4],bytes32,bytes32,bytes,bytes)[])
@@ -38,7 +36,6 @@ dataSources:
           handler: handleUnshield
         - event: Shield(uint256,uint256,(bytes32,(uint8,address,uint256),uint120)[],(bytes32[3],bytes32)[])
           handler: handleShieldLegacyPreMar23
-        # New Shield event (Mar 2023)
         - event: Shield(uint256,uint256,(bytes32,(uint8,address,uint256),uint120)[],(bytes32[3],bytes32)[],uint256[])
           handler: handleShield
       file: ./src/railgun-smart-wallet.ts

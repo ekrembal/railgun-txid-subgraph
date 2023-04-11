@@ -2,8 +2,6 @@ import {
   assert,
   describe,
   test,
-  beforeAll,
-  afterAll,
   newMockEvent,
 } from 'matchstick-as/assembly/index';
 import { BigInt, Bytes } from '@graphprotocol/graph-ts';

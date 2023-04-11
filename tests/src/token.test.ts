@@ -1,10 +1,4 @@
-import {
-  assert,
-  describe,
-  test,
-  beforeAll,
-  afterAll,
-} from 'matchstick-as/assembly/index';
+import { assert, describe, test } from 'matchstick-as/assembly/index';
 import { Bytes, BigInt } from '@graphprotocol/graph-ts';
 import { getTokenHash, getTokenTypeEnum } from '../../src/token';
 

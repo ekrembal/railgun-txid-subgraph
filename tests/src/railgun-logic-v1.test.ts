@@ -4,7 +4,6 @@ import {
   afterEach,
   clearStore,
   assert,
-  logStore,
 } from 'matchstick-as/assembly/index';
 import { BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
 import {

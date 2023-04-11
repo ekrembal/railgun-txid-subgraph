@@ -25,7 +25,6 @@ import {
   assertTokenFields,
 } from '../util/assert.test';
 import {
-  MOCK_TOKEN_ADDRESS,
   MOCK_TOKEN_ERC20_HASH,
   MOCK_TOKEN_ERC20_TUPLE,
   MOCK_TOKEN_ERC721_HASH,
