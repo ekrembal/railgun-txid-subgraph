@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: RailgunSmartWallet
-    network: goerli
+    network: mainnet
     source:
       abi: RailgunSmartWallet
-      address: "0xe8bEa99BB438C2f3D533604D33258d74d5eE4824"
-      startBlock: 7795991
+      address: "0xfa7093cdd9ee6932b4eb2c9e1cde7ce00b1fa4b9"
+      startBlock: 14737691
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -41,10 +41,10 @@ dataSources:
       file: ./src/railgun-smart-wallet.ts
   - kind: ethereum
     name: PoseidonT4
-    network: goerli
+    network: mainnet
     source:
       abi: PoseidonT4
-      address: "0xD72bEfcbdDd9615E90887b822Daa0115e751407a"
+      address: "0xcb2ebd9fcb570db7b4f723461efce7e1f3b5b5a3"
     mapping:
       kind: ethereum/contract
       apiVersion: 0.0.7

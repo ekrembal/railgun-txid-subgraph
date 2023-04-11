@@ -1,1 +1,1 @@
-export function handleNullEvent() {}
+export function handleNullEvent(): void {}
