@@ -216,7 +216,7 @@ export function handleShieldLegacyPreMar23(event: ShieldLegacyEvent): void {
     }
 
     const commitmentHash = getNoteHash(
-      BigInt.fromUnsignedBytes(commitment.npk),
+      reversedBytesToBigInt(commitment.npk),
       reversedBytesToBigInt(token.id),
       commitment.value,
     );
@@ -382,7 +382,7 @@ export function handleShield(event: ShieldEvent): void {
     }
 
     const commitmentHash = getNoteHash(
-      BigInt.fromUnsignedBytes(commitment.npk),
+      reversedBytesToBigInt(commitment.npk),
       reversedBytesToBigInt(token.id),
       commitment.value,
     );

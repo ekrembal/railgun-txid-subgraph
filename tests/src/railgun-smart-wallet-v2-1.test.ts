@@ -86,6 +86,11 @@ describe('railgun-smart-wallet-v2.1', () => {
       BigInt.fromString('4100'),
       reversedBytesToBigInt(commitments[0][0].toBytes()),
     );
+    // 2nd call to make sure in-place reverse didn't change the value
+    assert.bigIntEquals(
+      BigInt.fromString('4100'),
+      reversedBytesToBigInt(commitments[0][0].toBytes()),
+    );
     assert.bigIntEquals(
       BigInt.fromString('371037236002508321590760062721565925415445688979'),
       reversedBytesToBigInt(Bytes.fromHexString(MOCK_TOKEN_ERC20_HASH)),
@@ -393,7 +398,7 @@ describe('railgun-smart-wallet-v2.1', () => {
         treeNumber,
         startPosition,
         BigInt.fromI32(i),
-        BigInt.fromUnsignedBytes(hash[i]),
+        reversedBytesToBigInt(hash[i]),
       );
 
       const ciphertextBytesArray: Bytes[] = ciphertext[i][0].toBytesArray();

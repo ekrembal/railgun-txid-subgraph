@@ -1,5 +1,5 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
-import { createMockedFunction } from 'matchstick-as';
+import { createMockedFunction, log } from 'matchstick-as';
 import { getPoseidonT4ContractAddress } from '../../src/contracts';
 
 export const createMockPoseidonT4Call = (
@@ -9,6 +9,12 @@ export const createMockPoseidonT4Call = (
   result: BigInt,
 ): void => {
   const contractAddress = Address.fromString(getPoseidonT4ContractAddress());
+
+  // log.debug('inputs: {} {} {}', [
+  //   input1.toString(),
+  //   input2.toString(),
+  //   input3.toString(),
+  // ]);
 
   createMockedFunction(
     contractAddress,

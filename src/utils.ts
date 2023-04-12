@@ -24,7 +24,9 @@ export const padTo32BytesStart = (bytes: Bytes): Bytes => {
  * Reverse in an endian-friendly way.
  */
 export const reverseBytes = (bytes: Bytes): Bytes => {
-  return Bytes.fromUint8Array(bytes.reverse());
+  return Bytes.fromUint8Array(
+    Bytes.fromHexString(bytes.toHexString()).reverse(),
+  );
 };
 
 export const bigIntToReversedBytes = (bigint: BigInt): Bytes => {
