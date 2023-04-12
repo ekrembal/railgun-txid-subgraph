@@ -15,7 +15,7 @@ import {
   MOCK_TOKEN_ERC721_HASH,
   MOCK_TOKEN_ERC721_TUPLE,
 } from '../util/models.test';
-import { bigIntToBytes } from '../../src/utils';
+import { bigIntToBytes, reversedBytesToBigInt } from '../../src/utils';
 import { Shield1 as LegacyShieldEvent } from '../../generated/RailgunSmartWallet/RailgunSmartWallet';
 import { createMockPoseidonT4Call } from '../util/mock-calls.test';
 
@@ -52,15 +52,27 @@ describe('railgun-smart-wallet-v2.0-legacy-shield', () => {
       ],
     ];
 
+    // Validate Poseidon T4 inputs
+    assert.bigIntEquals(
+      BigInt.fromString('4100'),
+      BigInt.fromUnsignedBytes(commitments[0][0].toBytes()),
+    );
+    assert.bigIntEquals(
+      BigInt.fromString('371037236002508321590760062721565925415445688979'),
+      reversedBytesToBigInt(Bytes.fromHexString(MOCK_TOKEN_ERC20_HASH)),
+    );
+    assert.bigIntEquals(
+      BigInt.fromString('4300'),
+      commitments[0][2].toBigInt(),
+    );
+
     for (let i = 0; i < commitments.length; i++) {
       const commitment = commitments[i];
       createMockPoseidonT4Call(
         BigInt.fromUnsignedBytes(commitment[0].toBytes()),
         i === 0
-          ? BigInt.fromUnsignedBytes(Bytes.fromHexString(MOCK_TOKEN_ERC20_HASH))
-          : BigInt.fromUnsignedBytes(
-              Bytes.fromHexString(MOCK_TOKEN_ERC721_HASH),
-            ),
+          ? reversedBytesToBigInt(Bytes.fromHexString(MOCK_TOKEN_ERC20_HASH))
+          : reversedBytesToBigInt(Bytes.fromHexString(MOCK_TOKEN_ERC721_HASH)),
         commitment[2].toBigInt(),
         hash[i],
       );

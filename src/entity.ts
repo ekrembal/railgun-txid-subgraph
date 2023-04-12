@@ -159,16 +159,6 @@ export const saveLegacyGeneratedCommitment = (
   entity.preimage = preimage.id;
   entity.encryptedRandom = encryptedRandom.map<Bytes>((e) => bigIntToBytes(e));
 
-  log.warning(
-    'LegacyGeneratedCommitment blockNumber {} treePosition {} hash {}, hashBytes {}',
-    [
-      blockNumber.toString(),
-      treePosition.toString(),
-      commitmentHash.toHexString(),
-      entity.hash.toHexString(),
-    ],
-  );
-
   entity.save();
   return entity;
 };
@@ -231,13 +221,6 @@ export const saveShieldCommitment = (
   entity.shieldKey = shieldKey;
   entity.fee = fee;
 
-  log.warning('Shield blockNumber {} treePosition {} hash {}, hashBytes {}', [
-    blockNumber.toString(),
-    treePosition.toString(),
-    commitmentHash.toHexString(),
-    entity.hash.toHexString(),
-  ]);
-
   entity.save();
   return entity;
 };
@@ -265,13 +248,6 @@ export const saveTransactCommitment = (
   // Custom values: CommitmentBatch event
   entity.hash = commitmentHash;
   entity.ciphertext = ciphertext.id;
-
-  log.warning('Transact blockNumber {} treePosition {} hash {}, hashBytes {}', [
-    blockNumber.toString(),
-    treePosition.toString(),
-    commitmentHash.toHexString(),
-    entity.hash.toHexString(),
-  ]);
 
   entity.save();
   return entity;

@@ -18,13 +18,9 @@ export const poseidonT4Hash = (
 };
 
 export const getNoteHash = (
-  npk: Bytes,
-  tokenHash: Bytes,
+  npk: BigInt,
+  tokenHash: BigInt,
   value: BigInt,
 ): BigInt => {
-  return poseidonT4Hash(
-    BigInt.fromUnsignedBytes(npk),
-    BigInt.fromUnsignedBytes(tokenHash),
-    value,
-  );
+  return poseidonT4Hash(npk, tokenHash, value);
 };

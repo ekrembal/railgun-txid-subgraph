@@ -9,7 +9,7 @@ import {
   Shield as ShieldEvent,
   Shield1 as ShieldLegacyEvent,
 } from '../generated/RailgunSmartWallet/RailgunSmartWallet';
-import { bigIntToBytes, reverseBytes } from './utils';
+import { bigIntToBytes, reversedBytesToBigInt } from './utils';
 import {
   saveCiphertextFromBytesArray,
   saveCommitmentCiphertext,
@@ -105,8 +105,8 @@ export function handleGeneratedCommitmentBatch(
     }
 
     const commitmentHash = getNoteHash(
-      bigIntToBytes(commitment.npk),
-      token.id,
+      commitment.npk,
+      reversedBytesToBigInt(token.id),
       commitment.value,
     );
 
@@ -216,8 +216,8 @@ export function handleShieldLegacyPreMar23(event: ShieldLegacyEvent): void {
     }
 
     const commitmentHash = getNoteHash(
-      commitment.npk,
-      token.id,
+      BigInt.fromUnsignedBytes(commitment.npk),
+      reversedBytesToBigInt(token.id),
       commitment.value,
     );
 
@@ -279,7 +279,7 @@ export function handleTransact(event: TransactEvent): void {
       event.transaction.hash,
       event.params.treeNumber,
       treePosition,
-      BigInt.fromByteArray(reverseBytes(event.params.hash[i])),
+      reversedBytesToBigInt(event.params.hash[i]),
       commitmentCiphertext,
     );
   }
@@ -323,7 +323,7 @@ export function handleNullified(event: NullifiedEvent): void {
 
     const id = idFrom2PaddedBigInts(
       BigInt.fromString(event.params.treeNumber.toString()),
-      BigInt.fromUnsignedBytes(nullifier),
+      reversedBytesToBigInt(nullifier),
     );
 
     if (SHOULD_DEBUG_LOG) {
@@ -382,8 +382,8 @@ export function handleShield(event: ShieldEvent): void {
     }
 
     const commitmentHash = getNoteHash(
-      commitment.npk,
-      token.id,
+      BigInt.fromUnsignedBytes(commitment.npk),
+      reversedBytesToBigInt(token.id),
       commitment.value,
     );
 
