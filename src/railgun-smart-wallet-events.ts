@@ -1,4 +1,4 @@
-import { Bytes, BigInt, log, ethereum, Address } from '@graphprotocol/graph-ts';
+import { Bytes, BigInt, log } from '@graphprotocol/graph-ts';
 import {
   Nullifiers as NullifiersEvent,
   CommitmentBatch as CommitmentBatchEvent,
@@ -9,7 +9,7 @@ import {
   Shield as ShieldEvent,
   Shield1 as ShieldLegacyEvent,
 } from '../generated/RailgunSmartWallet/RailgunSmartWallet';
-import { bigIntToBytes } from './utils';
+import { bigIntToBytes, reverseBytes } from './utils';
 import {
   saveCiphertextFromBytesArray,
   saveCommitmentCiphertext,
@@ -279,7 +279,7 @@ export function handleTransact(event: TransactEvent): void {
       event.transaction.hash,
       event.params.treeNumber,
       treePosition,
-      BigInt.fromUnsignedBytes(event.params.hash[i]),
+      BigInt.fromByteArray(reverseBytes(event.params.hash[i])),
       commitmentCiphertext,
     );
   }

@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: RailgunSmartWallet
-    network: arbitrum-goerli
+    network: goerli
     source:
       abi: RailgunSmartWallet
-      address: "0xA0603e598F9Ac2fc7475a3fA08D0794066615D9a"
-      startBlock: 2611949
+      address: "0xe8bEa99BB438C2f3D533604D33258d74d5eE4824"
+      startBlock: 7795991
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

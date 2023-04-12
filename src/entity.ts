@@ -18,7 +18,7 @@ import {
   getCiphertextTag,
 } from './ciphertext';
 import { getTokenHash, getTokenTypeEnum } from './token';
-import { bigIntToBytes, reverseBytes } from './utils';
+import { bigIntToBytes, padHexTo32BytesStart } from './utils';
 
 export const saveToken = (
   tokenType: i32,
@@ -155,11 +155,13 @@ export const saveLegacyGeneratedCommitment = (
   entity.treePosition = treePosition.toI32();
 
   // Custom values: GeneratedCommitmentBatch event
-  entity.hash = Bytes.fromHexString(commitmentHash.toHexString());
+  entity.hash = Bytes.fromHexString(
+    padHexTo32BytesStart(commitmentHash.toHexString()),
+  );
   entity.preimage = preimage.id;
   entity.encryptedRandom = encryptedRandom.map<Bytes>((e) => bigIntToBytes(e));
 
-  log.debug(
+  log.warning(
     'LegacyGeneratedCommitment blockNumber {} treePosition {} hash {}, hashBytes {}',
     [
       blockNumber.toString(),
@@ -194,19 +196,10 @@ export const saveLegacyEncryptedCommitment = (
   entity.treePosition = treePosition.toI32();
 
   // Custom values: CommitmentBatch event
-  entity.hash = Bytes.fromHexString(commitmentHash.toHexString());
-  entity.ciphertext = ciphertext.id;
-
-  log.debug(
-    'LegacyEncryptedCommitment blockNumber {} treePosition {} hash {}, hashBigIntHex {}, hashBytes {}',
-    [
-      blockNumber.toString(),
-      treePosition.toString(),
-      commitmentHash.toString(),
-      commitmentHash.toHexString(),
-      entity.hash.toHexString(),
-    ],
+  entity.hash = Bytes.fromHexString(
+    padHexTo32BytesStart(commitmentHash.toHexString()),
   );
+  entity.ciphertext = ciphertext.id;
 
   entity.save();
   return entity;
@@ -236,13 +229,15 @@ export const saveShieldCommitment = (
   entity.treePosition = treePosition.toI32();
 
   // Custom values: Shield event
-  entity.hash = Bytes.fromHexString(commitmentHash.toHexString());
+  entity.hash = Bytes.fromHexString(
+    padHexTo32BytesStart(commitmentHash.toHexString()),
+  );
   entity.preimage = preimage.id;
   entity.encryptedBundle = encryptedBundle;
   entity.shieldKey = shieldKey;
   entity.fee = fee;
 
-  log.debug('Shield blockNumber {} treePosition {} hash {}, hashBytes {}', [
+  log.warning('Shield blockNumber {} treePosition {} hash {}, hashBytes {}', [
     blockNumber.toString(),
     treePosition.toString(),
     commitmentHash.toHexString(),
@@ -274,10 +269,12 @@ export const saveTransactCommitment = (
   entity.treePosition = treePosition.toI32();
 
   // Custom values: CommitmentBatch event
-  entity.hash = Bytes.fromHexString(commitmentHash.toHexString());
+  entity.hash = Bytes.fromHexString(
+    padHexTo32BytesStart(commitmentHash.toHexString()),
+  );
   entity.ciphertext = ciphertext.id;
 
-  log.debug('Transact blockNumber {} treePosition {} hash {}, hashBytes {}', [
+  log.warning('Transact blockNumber {} treePosition {} hash {}, hashBytes {}', [
     blockNumber.toString(),
     treePosition.toString(),
     commitmentHash.toHexString(),

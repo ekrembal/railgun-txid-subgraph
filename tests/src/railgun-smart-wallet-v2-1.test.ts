@@ -287,8 +287,8 @@ describe('railgun-smart-wallet-v2.1', () => {
     const startPosition = BigInt.fromString('3000');
 
     const hash: Bytes[] = [
-      Bytes.fromHexString('0x4444'),
-      Bytes.fromHexString('0x5555'),
+      Bytes.fromHexString('0x4455'),
+      Bytes.fromHexString('0x6677'),
     ];
 
     const ciphertext: Array<ethereum.Value>[] = [

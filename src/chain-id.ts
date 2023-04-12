@@ -1,1 +1,1 @@
-export const CHAIN_ID: u32 = 1;
+export const CHAIN_ID: u32 = 5;
