@@ -32,7 +32,11 @@ export class PoseidonT4 extends ethereum.SmartContract {
 
   poseidon1(input: Array<BigInt>): BigInt {
     let result = super.call('poseidon', 'poseidon(uint256[3]):(uint256)', [
-      ethereum.Value.fromUnsignedBigIntArray(input),
+      ethereum.Value.fromFixedSizedArray(
+        input.map<ethereum.Value>((i: BigInt) =>
+          ethereum.Value.fromUnsignedBigInt(i),
+        ),
+      ),
     ]);
 
     return result[0].toBigInt();
@@ -40,7 +44,11 @@ export class PoseidonT4 extends ethereum.SmartContract {
 
   try_poseidon1(input: Array<BigInt>): ethereum.CallResult<BigInt> {
     let result = super.tryCall('poseidon', 'poseidon(uint256[3]):(uint256)', [
-      ethereum.Value.fromUnsignedBigIntArray(input),
+      ethereum.Value.fromFixedSizedArray(
+        input.map<ethereum.Value>((i: BigInt) =>
+          ethereum.Value.fromUnsignedBigInt(i),
+        ),
+      ),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
