@@ -60,7 +60,7 @@ interface Commitment {
   treeNumber: Int!
   treePosition: Int!
   commitmentType: CommitmentType!
-  hash: Bytes!
+  hash: BigInt!
 }
 
 type LegacyGeneratedCommitment implements Commitment @entity(immutable: true) {
@@ -72,7 +72,7 @@ type LegacyGeneratedCommitment implements Commitment @entity(immutable: true) {
   treeNumber: Int!
   treePosition: Int!
   commitmentType: CommitmentType!
-  hash: Bytes!
+  hash: BigInt!
 
   # Custom values: GeneratedCommitmentBatch event
   preimage: CommitmentPreimage!
@@ -88,7 +88,7 @@ type LegacyEncryptedCommitment implements Commitment @entity(immutable: true) {
   treeNumber: Int!
   treePosition: Int!
   commitmentType: CommitmentType!
-  hash: Bytes!
+  hash: BigInt!
 
   # Custom values: CommitmentBatch event
   ciphertext: LegacyCommitmentCiphertext!
@@ -103,7 +103,7 @@ type ShieldCommitment implements Commitment @entity(immutable: true) {
   treeNumber: Int!
   treePosition: Int!
   commitmentType: CommitmentType!
-  hash: Bytes!
+  hash: BigInt!
 
   # Custom values: Shield event
   preimage: CommitmentPreimage!
@@ -121,7 +121,7 @@ type TransactCommitment implements Commitment @entity(immutable: true) {
   treeNumber: Int!
   treePosition: Int!
   commitmentType: CommitmentType!
-  hash: Bytes!
+  hash: BigInt!
 
   # Custom values: Transact event
   ciphertext: CommitmentCiphertext!

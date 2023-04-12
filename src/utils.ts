@@ -20,10 +20,6 @@ export const padTo32BytesStart = (bytes: Bytes): Bytes => {
   return Bytes.fromHexString(padded);
 };
 
-export const padHexTo32BytesStart = (hexString: string): string => {
-  return hexString.substring(2).padStart(64, '0');
-};
-
 export const bigIntToBytes = (bigint: BigInt): Bytes => {
   return Bytes.fromByteArray(Bytes.fromBigInt(bigint));
 };

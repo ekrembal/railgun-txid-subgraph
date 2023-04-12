@@ -373,7 +373,7 @@ describe('railgun-smart-wallet-v2.1', () => {
         treeNumber,
         startPosition,
         BigInt.fromI32(i),
-        BigInt.fromSignedBytes(hash[i]),
+        BigInt.fromUnsignedBytes(hash[i]),
       );
 
       const ciphertextBytesArray: Bytes[] = ciphertext[i][0].toBytesArray();
