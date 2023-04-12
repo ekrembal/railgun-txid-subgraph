@@ -27,6 +27,10 @@ export const reverseBytes = (bytes: Bytes): Bytes => {
   return Bytes.fromUint8Array(bytes.reverse());
 };
 
+export const bigIntToReversedBytes = (bigint: BigInt): Bytes => {
+  return Bytes.fromUint8Array(Bytes.fromBigInt(bigint).reverse());
+};
+
 export const bigIntToBytes = (bigint: BigInt): Bytes => {
   return Bytes.fromByteArray(Bytes.fromBigInt(bigint));
 };
