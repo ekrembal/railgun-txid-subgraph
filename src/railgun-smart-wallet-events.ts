@@ -25,7 +25,6 @@ import {
 } from './entity';
 import { idFrom2PaddedBigInts, idFromEventLogIndex } from './id';
 import { getNoteHash } from './hash';
-import { chainIdForProxyContract } from './contracts';
 
 /**
  * Enable to log IDs for new entities in this file.
@@ -106,7 +105,6 @@ export function handleGeneratedCommitmentBatch(
     }
 
     const commitmentHash = getNoteHash(
-      getChainIdFromReceipt(event),
       bigIntToBytes(commitment.npk),
       token.id,
       commitment.value,
@@ -218,7 +216,6 @@ export function handleShieldLegacyPreMar23(event: ShieldLegacyEvent): void {
     }
 
     const commitmentHash = getNoteHash(
-      getChainIdFromReceipt(event),
       commitment.npk,
       token.id,
       commitment.value,
@@ -385,7 +382,6 @@ export function handleShield(event: ShieldEvent): void {
     }
 
     const commitmentHash = getNoteHash(
-      getChainIdFromReceipt(event),
       commitment.npk,
       token.id,
       commitment.value,
@@ -406,15 +402,3 @@ export function handleShield(event: ShieldEvent): void {
     );
   }
 }
-
-const getChainIdFromReceipt = (event: ethereum.Event): u32 => {
-  if (event.receipt) {
-    const receipt = changetype<ethereum.TransactionReceipt>(event.receipt);
-    return chainIdForProxyContract(receipt.contractAddress);
-  }
-  if (event.transaction.to) {
-    const toAddress = changetype<Address>(event.transaction.to);
-    return chainIdForProxyContract(toAddress);
-  }
-  throw new Error('No contract address found for transaction');
-};

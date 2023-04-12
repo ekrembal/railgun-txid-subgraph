@@ -8,7 +8,7 @@ export const createMockPoseidonT4Call = (
   input3: BigInt,
   result: BigInt,
 ): void => {
-  const contractAddress = Address.fromString(getPoseidonT4ContractAddress(1));
+  const contractAddress = Address.fromString(getPoseidonT4ContractAddress());
 
   createMockedFunction(
     contractAddress,

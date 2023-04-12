@@ -33,7 +33,6 @@ describe('hash', () => {
 
     assert.bytesEquals(
       getNoteHash(
-        1, // chainId
         Bytes.fromHexString(
           '0x12a1f22c8e1f7feb6923ac7118fc66aaa19ebbb1abbbba9b8a271d06b2277abd', // npk
         ),

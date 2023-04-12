@@ -1,4 +1,4 @@
-import { Bytes, BigInt, log } from '@graphprotocol/graph-ts';
+import { Bytes, BigInt } from '@graphprotocol/graph-ts';
 
 export const hexlify = (bytes: Bytes): string => {
   return bytes.toHexString().substring(2);
