@@ -50,8 +50,8 @@ describe('railgun-smart-wallet-v2.1', () => {
     const startPosition = BigInt.fromString('3000');
 
     const hash: BigInt[] = [
-      BigInt.fromString('4444'),
-      BigInt.fromString('5555'),
+      BigInt.fromString('4455'),
+      BigInt.fromString('6677'),
     ];
 
     const commitments: Array<ethereum.Value>[] = [

@@ -1,7 +1,6 @@
 import { Bytes, BigInt, Address } from '@graphprotocol/graph-ts';
 import { PoseidonT4 } from './class/PoseidonT4';
 import { getPoseidonT4ContractAddress } from './contracts';
-import { bigIntToBytes } from './utils';
 
 export const poseidonT4Hash = (
   input1: BigInt,
@@ -22,12 +21,10 @@ export const getNoteHash = (
   npk: Bytes,
   tokenHash: Bytes,
   value: BigInt,
-): Bytes => {
-  return bigIntToBytes(
-    poseidonT4Hash(
-      BigInt.fromUnsignedBytes(npk),
-      BigInt.fromUnsignedBytes(tokenHash),
-      value,
-    ),
+): BigInt => {
+  return poseidonT4Hash(
+    BigInt.fromUnsignedBytes(npk),
+    BigInt.fromUnsignedBytes(tokenHash),
+    value,
   );
 };

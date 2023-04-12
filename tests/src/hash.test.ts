@@ -1,7 +1,6 @@
 import { assert, describe, test } from 'matchstick-as/assembly';
 import { BigInt, Bytes, log } from '@graphprotocol/graph-ts';
 import { getNoteHash } from '../../src/hash';
-import { bigIntToBytes } from '../../src/utils';
 import { createMockPoseidonT4Call } from '../util/mock-calls.test';
 
 describe('hash', () => {
@@ -31,7 +30,7 @@ describe('hash', () => {
       ),
     );
 
-    assert.bytesEquals(
+    assert.stringEquals(
       getNoteHash(
         Bytes.fromHexString(
           '0x12a1f22c8e1f7feb6923ac7118fc66aaa19ebbb1abbbba9b8a271d06b2277abd', // npk
@@ -44,10 +43,12 @@ describe('hash', () => {
             '0x0000000000000000000000001b70cc71', // value
           ),
         ),
-      ),
-      Bytes.fromHexString(
-        '0x04300939ad6f444712784a719c6d0bbe1b49a0b4d16983a6324bbbac136a83c7', // hash
-      ),
+      ).toString(),
+      BigInt.fromUnsignedBytes(
+        Bytes.fromHexString(
+          '0x04300939ad6f444712784a719c6d0bbe1b49a0b4d16983a6324bbbac136a83c7', // hash
+        ),
+      ).toString(),
     );
   });
 });

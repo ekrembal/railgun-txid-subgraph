@@ -78,8 +78,8 @@ describe('railgun-logic-v1', () => {
     const startPosition = BigInt.fromString('3000');
 
     const hash: BigInt[] = [
-      BigInt.fromString('4444'),
-      BigInt.fromString('5555'),
+      BigInt.fromString('4455'),
+      BigInt.fromString('6677'),
     ];
 
     const commitments: Array<ethereum.Value>[] = [
@@ -196,8 +196,8 @@ describe('railgun-logic-v1', () => {
     const startPosition = BigInt.fromString('3000');
 
     const hash: BigInt[] = [
-      BigInt.fromString('4444'),
-      BigInt.fromString('5555'),
+      BigInt.fromString('4455'),
+      BigInt.fromString('6677'),
     ];
 
     const ciphertext: Array<ethereum.Value>[] = [
@@ -351,7 +351,7 @@ describe('railgun-logic-v1', () => {
     const treeNumber = BigInt.fromString('0');
     const startPosition = BigInt.fromString('256');
 
-    const hash: BigInt[] = [BigInt.fromString('4444')];
+    const hash: BigInt[] = [BigInt.fromString('4455')];
 
     const ciphertext: Array<ethereum.Value>[] = [
       [

@@ -21,10 +21,7 @@ export const padTo32BytesStart = (bytes: Bytes): Bytes => {
 };
 
 export const bigIntToBytes = (bigint: BigInt): Bytes => {
-  const hex = Bytes.fromBigInt(bigint).toHexString();
-
-  // Bytes.fromBigInt sometimes incorrectly adds an extra 0x00 byte to the end - trim with a slice call.
-  return Bytes.fromHexString(hex.slice(0, 66));
+  return Bytes.fromByteArray(Bytes.fromBigInt(bigint));
 };
 
 /**

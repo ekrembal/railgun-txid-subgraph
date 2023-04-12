@@ -279,7 +279,7 @@ export function handleTransact(event: TransactEvent): void {
       event.transaction.hash,
       event.params.treeNumber,
       treePosition,
-      event.params.hash[i],
+      BigInt.fromUnsignedBytes(event.params.hash[i]),
       commitmentCiphertext,
     );
   }
