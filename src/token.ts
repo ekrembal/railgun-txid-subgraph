@@ -1,5 +1,10 @@
 import { Bytes, crypto, BigInt } from '@graphprotocol/graph-ts';
-import { bigIntToBytes, padTo32BytesStart, reverseBytes } from './utils';
+import {
+  bigIntToBytes,
+  bigIntToReversedBytes,
+  padTo32BytesStart,
+  reverseBytes,
+} from './utils';
 
 const SNARK_PRIME_BIG_INT = BigInt.fromString(
   '21888242871839275222246405745257275088548364400416034343698204186575808495617',
@@ -14,9 +19,7 @@ const getTokenDataHashNFT = (
     bigIntToBytes(BigInt.fromString(tokenType.toString())),
   );
   const tokenAddressBytes = padTo32BytesStart(tokenAddress);
-  const tokenSubIDBytes = padTo32BytesStart(
-    bigIntToBytes(BigInt.fromString(tokenSubID.toString())),
-  );
+  const tokenSubIDBytes = padTo32BytesStart(bigIntToReversedBytes(tokenSubID));
 
   // keccak256 hash of the token data.
   const combinedData: Bytes = tokenTypeBytes

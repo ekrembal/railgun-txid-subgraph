@@ -128,7 +128,7 @@ type TransactCommitment implements Commitment @entity(immutable: true) {
 }
 
 type Unshield @entity(immutable: true) {
-  id: Bytes! # tree number + nullifier
+  id: Bytes! # transaction hash + event log index
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

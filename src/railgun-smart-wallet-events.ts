@@ -9,7 +9,11 @@ import {
   Shield as ShieldEvent,
   Shield1 as ShieldLegacyEvent,
 } from '../generated/RailgunSmartWallet/RailgunSmartWallet';
-import { bigIntToBytes, reversedBytesToBigInt } from './utils';
+import {
+  bigIntToBytes,
+  bigIntToReversedBytes,
+  reversedBytesToBigInt,
+} from './utils';
 import {
   saveCiphertextFromBytesArray,
   saveCommitmentCiphertext,
@@ -41,7 +45,7 @@ export function handleNullifiers(event: NullifiersEvent): void {
     const id = idFrom2PaddedBigInts(event.params.treeNumber, nullifier);
 
     const treeNumber = event.params.treeNumber;
-    const nullifierBytes = bigIntToBytes(nullifier);
+    const nullifierBytes = bigIntToReversedBytes(nullifier);
 
     if (SHOULD_DEBUG_LOG) {
       log.debug('Nullifier: id {}, block {}, hash {}, treeNumber {}', [

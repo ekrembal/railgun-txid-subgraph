@@ -18,14 +18,14 @@ import {
   getCiphertextTag,
 } from './ciphertext';
 import { getTokenHash, getTokenTypeEnum } from './token';
-import { bigIntToBytes } from './utils';
+import { bigIntToBytes, bigIntToReversedBytes } from './utils';
 
 export const saveToken = (
   tokenType: i32,
   tokenAddress: Bytes,
   tokenSubID: BigInt,
 ): Token => {
-  const tokenSubIDBytes = bigIntToBytes(tokenSubID);
+  const tokenSubIDBytes = bigIntToReversedBytes(tokenSubID);
   const id = getTokenHash(tokenType, tokenAddress, tokenSubID);
 
   // Token can be a duplicate for hash, but is immutable in DB.

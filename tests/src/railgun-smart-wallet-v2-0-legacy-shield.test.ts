@@ -15,11 +15,7 @@ import {
   MOCK_TOKEN_ERC721_HASH,
   MOCK_TOKEN_ERC721_TUPLE,
 } from '../util/models.test';
-import {
-  bigIntToBytes,
-  bigIntToReversedBytes,
-  reversedBytesToBigInt,
-} from '../../src/utils';
+import { bigIntToReversedBytes, reversedBytesToBigInt } from '../../src/utils';
 import { Shield1 as LegacyShieldEvent } from '../../generated/RailgunSmartWallet/RailgunSmartWallet';
 import { createMockPoseidonT4Call } from '../util/mock-calls.test';
 

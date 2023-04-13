@@ -1,7 +1,11 @@
 import { ethereum, BigInt } from '@graphprotocol/graph-ts';
 import { assert } from 'matchstick-as';
 import { getTokenTypeEnum } from '../../src/token';
-import { padHexStringToEven } from '../../src/utils';
+import {
+  bigIntToBytes,
+  bigIntToReversedBytes,
+  padHexStringToEven,
+} from '../../src/utils';
 
 export const assertCommonFields = (
   entityType: string,
@@ -53,30 +57,17 @@ export const assertCommonCommitmentFields = (
   assert.fieldEquals(entityType, id, 'hash', hash.toString());
 };
 
-export const assertTokenFields = (
-  tokenHash: string,
-  tuple: ethereum.Tuple,
-): void => {
+export const assertTokenFields = (id: string, tuple: ethereum.Tuple): void => {
   const tokenType = tuple[0].toI32();
   const tokenAddress = tuple[1].toAddress();
   const tokenSubID = tuple[2].toBigInt();
 
+  assert.fieldEquals('Token', id, 'tokenType', getTokenTypeEnum(tokenType));
+  assert.fieldEquals('Token', id, 'tokenAddress', tokenAddress.toHexString());
   assert.fieldEquals(
     'Token',
-    tokenHash,
-    'tokenType',
-    getTokenTypeEnum(tokenType),
-  );
-  assert.fieldEquals(
-    'Token',
-    tokenHash,
-    'tokenAddress',
-    tokenAddress.toHexString(),
-  );
-  assert.fieldEquals(
-    'Token',
-    tokenHash,
+    id,
     'tokenSubID',
-    padHexStringToEven(tokenSubID.toHexString()),
+    bigIntToBytes(tokenSubID).toHexString(),
   );
 };

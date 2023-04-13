@@ -32,7 +32,7 @@ export const MOCK_TOKEN_ERC721_TUPLE: ethereum.Tuple = changetype<
   // tokenAddress
   ethereum.Value.fromAddress(MOCK_TOKEN_ADDRESS),
   // tokenSubID
-  ethereum.Value.fromUnsignedBigInt(BigInt.fromString('1')),
+  ethereum.Value.fromUnsignedBigInt(BigInt.fromString('32083208')),
 ]);
 export const MOCK_TOKEN_ERC721_HASH =
-  '0x1f325aa1bee8caa33be0570b597f64a8f7e745ee2b9a26a8ed3c3bc769d90c4b';
+  '0x07e9ca4f4ba94eeea80ce06dc63c48ee3c78ee1b94e67a549d8796108ebe1ccb';

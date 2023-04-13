@@ -2,6 +2,7 @@ import { assert, describe, test } from 'matchstick-as/assembly/index';
 import { Bytes, BigInt, ByteArray } from '@graphprotocol/graph-ts';
 import {
   bigIntToBytes,
+  bigIntToReversedBytes,
   hexlify,
   padTo32BytesEnd,
   padTo32BytesStart,
@@ -46,6 +47,13 @@ describe('utils', () => {
     assert.bytesEquals(
       bigIntToBytes(BigInt.fromString('1111')),
       Bytes.fromHexString('0x5704'),
+    );
+  });
+
+  test('Should convert bigint to reversed bytes', () => {
+    assert.bytesEquals(
+      bigIntToReversedBytes(BigInt.fromString('32083208')),
+      Bytes.fromHexString('0x01E98D08'),
     );
   });
 
