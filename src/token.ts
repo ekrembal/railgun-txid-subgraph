@@ -1,7 +1,7 @@
 import { Bytes, crypto, BigInt } from '@graphprotocol/graph-ts';
 import {
   bigIntToBytes,
-  bigIntToReversedBytes,
+  bigIntToBytes,
   padTo32BytesStart,
   reverseBytes,
 } from './utils';
@@ -19,7 +19,7 @@ const getTokenDataHashNFT = (
     bigIntToBytes(BigInt.fromString(tokenType.toString())),
   );
   const tokenAddressBytes = padTo32BytesStart(tokenAddress);
-  const tokenSubIDBytes = padTo32BytesStart(bigIntToReversedBytes(tokenSubID));
+  const tokenSubIDBytes = padTo32BytesStart(bigIntToBytes(tokenSubID));
 
   // keccak256 hash of the token data.
   const combinedData: Bytes = tokenTypeBytes
@@ -32,7 +32,7 @@ const getTokenDataHashNFT = (
   const modulo = BigInt.fromUnsignedBytes(bytesReversed).mod(
     SNARK_PRIME_BIG_INT,
   );
-  return reverseBytes(bigIntToBytes(modulo));
+  return bigIntToBytes(modulo);
 };
 
 export const getTokenHash = (

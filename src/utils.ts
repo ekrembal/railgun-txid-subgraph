@@ -20,6 +20,12 @@ export const padTo32BytesStart = (bytes: Bytes): Bytes => {
   return Bytes.fromHexString(padded);
 };
 
+export const padHexStringToEven = (hexString: string): string => {
+  const stripped = hexString.substring(2);
+  const padded = stripped.length % 2 === 0 ? stripped : '0' + stripped;
+  return `0x${padded}`;
+};
+
 /**
  * Reverse in an endian-friendly way.
  */
@@ -29,20 +35,12 @@ export const reverseBytes = (bytes: Bytes): Bytes => {
   );
 };
 
-export const bigIntToReversedBytes = (bigint: BigInt): Bytes => {
-  return Bytes.fromUint8Array(Bytes.fromBigInt(bigint).reverse());
-};
-
 export const bigIntToBytes = (bigint: BigInt): Bytes => {
-  return Bytes.fromByteArray(Bytes.fromBigInt(bigint));
+  return Bytes.fromUint8Array(
+    Bytes.fromHexString(padHexStringToEven(bigint.toHexString())),
+  );
 };
 
 export const reversedBytesToBigInt = (bytes: Bytes): BigInt => {
   return BigInt.fromUnsignedBytes(reverseBytes(bytes));
-};
-
-export const padHexStringToEven = (hexString: string): string => {
-  const stripped = hexString.substring(2);
-  const padded = stripped.length % 2 === 0 ? stripped : '0' + stripped;
-  return `0x${padded}`;
 };

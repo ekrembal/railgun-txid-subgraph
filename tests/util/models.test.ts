@@ -35,4 +35,4 @@ export const MOCK_TOKEN_ERC721_TUPLE: ethereum.Tuple = changetype<
   ethereum.Value.fromUnsignedBigInt(BigInt.fromString('32083208')),
 ]);
 export const MOCK_TOKEN_ERC721_HASH =
-  '0x07e9ca4f4ba94eeea80ce06dc63c48ee3c78ee1b94e67a549d8796108ebe1ccb';
+  '0x1c1014bc008ebc46c8ef50a10974a648c7cbb0e7e2383cf2a0e6f3d77d28534e';

@@ -2,9 +2,7 @@ import { assert, describe, test } from 'matchstick-as/assembly/index';
 import { Bytes, BigInt, ByteArray } from '@graphprotocol/graph-ts';
 import {
   bigIntToBytes,
-  bigIntToReversedBytes,
   hexlify,
-  padTo32BytesEnd,
   padTo32BytesStart,
   reverseBytes,
 } from '../../src/utils';
@@ -12,15 +10,6 @@ import {
 describe('utils', () => {
   test('Should hexlify bytes', () => {
     assert.stringEquals(hexlify(Bytes.fromHexString('0x1234')), '1234');
-  });
-
-  test('Should pad to 32 bytes - end', () => {
-    assert.bytesEquals(
-      padTo32BytesEnd(Bytes.fromHexString('0x1234')),
-      Bytes.fromHexString(
-        '0x1234000000000000000000000000000000000000000000000000000000000000',
-      ),
-    );
   });
 
   test('Should pad to 32 bytes - start', () => {
@@ -42,17 +31,17 @@ describe('utils', () => {
   test('Should convert bytes to bigint', () => {
     assert.bytesEquals(
       bigIntToBytes(BigInt.fromString('4444')),
-      Bytes.fromHexString('0x5c11'),
+      Bytes.fromHexString('0x115c'),
     );
     assert.bytesEquals(
       bigIntToBytes(BigInt.fromString('1111')),
-      Bytes.fromHexString('0x5704'),
+      Bytes.fromHexString('0x0457'),
     );
   });
 
   test('Should convert bigint to reversed bytes', () => {
     assert.bytesEquals(
-      bigIntToReversedBytes(BigInt.fromString('32083208')),
+      bigIntToBytes(BigInt.fromString('32083208')),
       Bytes.fromHexString('0x01E98D08'),
     );
   });
@@ -77,12 +66,12 @@ describe('utils', () => {
       bigIntToBytes(BigInt.fromString('2')),
       Bytes.fromHexString('0x02'),
     );
-
-    // Little endian
     assert.bytesEquals(
       bigIntToBytes(BigInt.fromI32(2)),
-      Bytes.fromHexString('0x02000000'),
+      Bytes.fromHexString('0x02'),
     );
+
+    // Little endian
     assert.bytesEquals(Bytes.fromI32(2), Bytes.fromHexString('0x02000000'));
   });
 

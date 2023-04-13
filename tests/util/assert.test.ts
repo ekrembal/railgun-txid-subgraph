@@ -1,9 +1,9 @@
 import { ethereum, BigInt } from '@graphprotocol/graph-ts';
-import { assert } from 'matchstick-as';
+import { assert, log } from 'matchstick-as';
 import { getTokenTypeEnum } from '../../src/token';
 import {
   bigIntToBytes,
-  bigIntToReversedBytes,
+  bigIntToBytes,
   padHexStringToEven,
 } from '../../src/utils';
 
@@ -61,6 +61,8 @@ export const assertTokenFields = (id: string, tuple: ethereum.Tuple): void => {
   const tokenType = tuple[0].toI32();
   const tokenAddress = tuple[1].toAddress();
   const tokenSubID = tuple[2].toBigInt();
+
+  log.debug('{}', [bigIntToBytes(tokenSubID).toHexString()]);
 
   assert.fieldEquals('Token', id, 'tokenType', getTokenTypeEnum(tokenType));
   assert.fieldEquals('Token', id, 'tokenAddress', tokenAddress.toHexString());
