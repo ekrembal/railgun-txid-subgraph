@@ -2,14 +2,14 @@ import { assert, describe, test } from 'matchstick-as/assembly/index';
 import { Bytes, BigInt, ByteArray } from '@graphprotocol/graph-ts';
 import {
   bigIntToBytes,
-  hexlify,
+  stripPrefix0x,
   padTo32BytesStart,
   reverseBytes,
 } from '../../src/utils';
 
 describe('utils', () => {
-  test('Should hexlify bytes', () => {
-    assert.stringEquals(hexlify(Bytes.fromHexString('0x1234')), '1234');
+  test('Should stripPrefix0x bytes', () => {
+    assert.stringEquals(stripPrefix0x(Bytes.fromHexString('0x1234')), '1234');
   });
 
   test('Should pad to 32 bytes - start', () => {

@@ -1,6 +1,6 @@
 import { Bytes, BigInt } from '@graphprotocol/graph-ts';
 
-export const hexlify = (bytes: Bytes): string => {
+export const stripPrefix0x = (bytes: Bytes): string => {
   return bytes.toHexString().substring(2);
 };
 
