@@ -18,7 +18,7 @@ import {
   getCiphertextTag,
 } from './ciphertext';
 import { getTokenHash, getTokenTypeEnum } from './token';
-import { bigIntToBytes, bigIntToBytes } from './utils';
+import { bigIntToBytes } from './utils';
 
 export const saveToken = (
   tokenType: i32,
@@ -139,6 +139,7 @@ export const saveLegacyGeneratedCommitment = (
   blockTimestamp: BigInt,
   transactionHash: Bytes,
   treeNumber: BigInt,
+  batchStartTreePosition: BigInt,
   treePosition: BigInt,
   commitmentHash: BigInt,
   preimage: CommitmentPreimage,
@@ -152,6 +153,7 @@ export const saveLegacyGeneratedCommitment = (
   entity.blockTimestamp = blockTimestamp;
   entity.transactionHash = transactionHash;
   entity.treeNumber = treeNumber.toI32();
+  entity.batchStartTreePosition = batchStartTreePosition.toI32();
   entity.treePosition = treePosition.toI32();
 
   // Custom values: GeneratedCommitmentBatch event
@@ -169,6 +171,7 @@ export const saveLegacyEncryptedCommitment = (
   blockTimestamp: BigInt,
   transactionHash: Bytes,
   treeNumber: BigInt,
+  batchStartTreePosition: BigInt,
   treePosition: BigInt,
   commitmentHash: BigInt,
   ciphertext: LegacyCommitmentCiphertext,
@@ -181,6 +184,7 @@ export const saveLegacyEncryptedCommitment = (
   entity.blockTimestamp = blockTimestamp;
   entity.transactionHash = transactionHash;
   entity.treeNumber = treeNumber.toI32();
+  entity.batchStartTreePosition = batchStartTreePosition.toI32();
   entity.treePosition = treePosition.toI32();
 
   // Custom values: CommitmentBatch event
@@ -197,6 +201,7 @@ export const saveShieldCommitment = (
   blockTimestamp: BigInt,
   transactionHash: Bytes,
   treeNumber: BigInt,
+  batchStartTreePosition: BigInt,
   treePosition: BigInt,
   commitmentHash: BigInt,
   preimage: CommitmentPreimage,
@@ -212,6 +217,7 @@ export const saveShieldCommitment = (
   entity.blockTimestamp = blockTimestamp;
   entity.transactionHash = transactionHash;
   entity.treeNumber = treeNumber.toI32();
+  entity.batchStartTreePosition = batchStartTreePosition.toI32();
   entity.treePosition = treePosition.toI32();
 
   // Custom values: Shield event
@@ -231,6 +237,7 @@ export const saveTransactCommitment = (
   blockTimestamp: BigInt,
   transactionHash: Bytes,
   treeNumber: BigInt,
+  batchStartTreePosition: BigInt,
   treePosition: BigInt,
   commitmentHash: BigInt,
   ciphertext: CommitmentCiphertext,
@@ -243,6 +250,7 @@ export const saveTransactCommitment = (
   entity.blockTimestamp = blockTimestamp;
   entity.transactionHash = transactionHash;
   entity.treeNumber = treeNumber.toI32();
+  entity.batchStartTreePosition = batchStartTreePosition.toI32();
   entity.treePosition = treePosition.toI32();
 
   // Custom values: CommitmentBatch event

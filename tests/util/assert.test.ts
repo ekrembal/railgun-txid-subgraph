@@ -50,6 +50,13 @@ export const assertCommonCommitmentFields = (
   assert.fieldEquals(
     entityType,
     id,
+    'batchStartTreePosition',
+    startPosition.toString(),
+  );
+
+  assert.fieldEquals(
+    entityType,
+    id,
     'treePosition',
     startPosition.plus(i).toString(),
   );

@@ -58,6 +58,7 @@ interface Commitment {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
   treeNumber: Int!
+  batchStartTreePosition: Int!
   treePosition: Int!
   commitmentType: CommitmentType!
   hash: BigInt!
@@ -70,6 +71,7 @@ type LegacyGeneratedCommitment implements Commitment @entity(immutable: true) {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
   treeNumber: Int!
+  batchStartTreePosition: Int!
   treePosition: Int!
   commitmentType: CommitmentType!
   hash: BigInt!
@@ -86,6 +88,7 @@ type LegacyEncryptedCommitment implements Commitment @entity(immutable: true) {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
   treeNumber: Int!
+  batchStartTreePosition: Int!
   treePosition: Int!
   commitmentType: CommitmentType!
   hash: BigInt!
@@ -101,6 +104,7 @@ type ShieldCommitment implements Commitment @entity(immutable: true) {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
   treeNumber: Int!
+  batchStartTreePosition: Int!
   treePosition: Int!
   commitmentType: CommitmentType!
   hash: BigInt!
@@ -119,6 +123,7 @@ type TransactCommitment implements Commitment @entity(immutable: true) {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
   treeNumber: Int!
+  batchStartTreePosition: Int!
   treePosition: Int!
   commitmentType: CommitmentType!
   hash: BigInt!
