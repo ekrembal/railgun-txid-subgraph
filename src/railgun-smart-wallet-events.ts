@@ -316,6 +316,7 @@ export function handleUnshield(event: UnshieldEvent): void {
     token,
     event.params.amount,
     event.params.fee,
+    event.logIndex,
   );
 }
 

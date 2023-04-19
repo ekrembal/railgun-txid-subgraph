@@ -18,11 +18,7 @@ import {
   handleTransact,
   handleUnshield,
 } from '../../src/railgun-smart-wallet-events';
-import {
-  bigIntToBytes,
-  bigIntToBytes,
-  reversedBytesToBigInt,
-} from '../../src/utils';
+import { bigIntToBytes, reversedBytesToBigInt } from '../../src/utils';
 import {
   assertCommonCommitmentFields,
   assertCommonFields,
@@ -300,6 +296,7 @@ describe('railgun-smart-wallet-v2.1', () => {
         amounts[i].toString(),
       );
       assert.fieldEquals('Unshield', expectedID, 'fee', fees[i].toString());
+      assert.fieldEquals('Unshield', expectedID, 'eventLogIndex', '1');
     }
   });
 

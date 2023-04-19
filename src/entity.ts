@@ -270,6 +270,7 @@ export const saveUnshield = (
   token: Token,
   amount: BigInt,
   fee: BigInt,
+  eventLogIndex: BigInt,
 ): Unshield => {
   const entity = new Unshield(id);
 
@@ -282,6 +283,7 @@ export const saveUnshield = (
   entity.token = token.id;
   entity.amount = amount;
   entity.fee = fee;
+  entity.eventLogIndex = eventLogIndex;
 
   entity.save();
   return entity;

@@ -143,6 +143,7 @@ type Unshield @entity(immutable: true) {
   token: Token!
   amount: BigInt!
   fee: BigInt!
+  eventLogIndex: BigInt!
 }
 
 type Nullifier @entity(immutable: true) {
