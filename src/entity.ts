@@ -1,4 +1,4 @@
-import { Bytes, BigInt, log } from '@graphprotocol/graph-ts';
+import { Bytes, BigInt, log } from "@graphprotocol/graph-ts";
 import {
   CommitmentPreimage,
   Token,
@@ -11,19 +11,21 @@ import {
   Ciphertext,
   Unshield,
   Nullifier,
-} from '../generated/schema';
+  TransactCall,
+  Transaction,
+} from "../generated/schema";
 import {
   getCiphertextData,
   getCiphertextIV,
   getCiphertextTag,
-} from './ciphertext';
-import { getTokenHash, getTokenTypeEnum } from './token';
-import { bigIntToBytes } from './utils';
+} from "./ciphertext";
+import { getTokenHash, getTokenTypeEnum } from "./token";
+import { bigIntToBytes } from "./utils";
 
 export const saveToken = (
   tokenType: i32,
   tokenAddress: Bytes,
-  tokenSubID: BigInt,
+  tokenSubID: BigInt
 ): Token => {
   const tokenSubIDBytes = bigIntToBytes(tokenSubID);
   const id = getTokenHash(tokenType, tokenAddress, tokenSubID);
@@ -49,7 +51,7 @@ export const saveCommitmentPreimage = (
   id: Bytes,
   npk: Bytes,
   token: Token,
-  value: BigInt,
+  value: BigInt
 ): CommitmentPreimage => {
   const entity = new CommitmentPreimage(id);
 
@@ -63,7 +65,7 @@ export const saveCommitmentPreimage = (
 
 export const saveCiphertextFromBytesArray = (
   id: Bytes,
-  ciphertext: Bytes[],
+  ciphertext: Bytes[]
 ): Ciphertext => {
   const entity = new Ciphertext(id);
 
@@ -79,7 +81,7 @@ export const saveLegacyCommitmentCiphertext = (
   id: Bytes,
   ciphertext: Ciphertext,
   ephemeralKeys: BigInt[],
-  memo: BigInt[],
+  memo: BigInt[]
 ): LegacyCommitmentCiphertext => {
   const entity = new LegacyCommitmentCiphertext(id);
 
@@ -97,7 +99,7 @@ export const saveCommitmentCiphertext = (
   blindedSenderViewingKey: Bytes,
   blindedReceiverViewingKey: Bytes,
   annotationData: Bytes,
-  memo: Bytes,
+  memo: Bytes
 ): CommitmentCiphertext => {
   const entity = new CommitmentCiphertext(id);
 
@@ -117,7 +119,7 @@ export const saveNullifier = (
   blockTimestamp: BigInt,
   transactionHash: Bytes,
   treeNumber: BigInt,
-  nullifier: Bytes,
+  nullifier: Bytes
 ): Nullifier => {
   const entity = new Nullifier(id);
 
@@ -143,11 +145,11 @@ export const saveLegacyGeneratedCommitment = (
   treePosition: BigInt,
   commitmentHash: BigInt,
   preimage: CommitmentPreimage,
-  encryptedRandom: BigInt[],
+  encryptedRandom: BigInt[]
 ): LegacyGeneratedCommitment => {
   const entity = new LegacyGeneratedCommitment(id);
 
-  entity.commitmentType = 'LegacyGeneratedCommitment';
+  entity.commitmentType = "LegacyGeneratedCommitment";
 
   entity.blockNumber = blockNumber;
   entity.blockTimestamp = blockTimestamp;
@@ -174,11 +176,11 @@ export const saveLegacyEncryptedCommitment = (
   batchStartTreePosition: BigInt,
   treePosition: BigInt,
   commitmentHash: BigInt,
-  ciphertext: LegacyCommitmentCiphertext,
+  ciphertext: LegacyCommitmentCiphertext
 ): LegacyEncryptedCommitment => {
   const entity = new LegacyEncryptedCommitment(id);
 
-  entity.commitmentType = 'LegacyEncryptedCommitment';
+  entity.commitmentType = "LegacyEncryptedCommitment";
 
   entity.blockNumber = blockNumber;
   entity.blockTimestamp = blockTimestamp;
@@ -207,11 +209,11 @@ export const saveShieldCommitment = (
   preimage: CommitmentPreimage,
   encryptedBundle: Bytes[],
   shieldKey: Bytes,
-  fee: BigInt | null,
+  fee: BigInt | null
 ): ShieldCommitment => {
   const entity = new ShieldCommitment(id);
 
-  entity.commitmentType = 'ShieldCommitment';
+  entity.commitmentType = "ShieldCommitment";
 
   entity.blockNumber = blockNumber;
   entity.blockTimestamp = blockTimestamp;
@@ -231,6 +233,36 @@ export const saveShieldCommitment = (
   return entity;
 };
 
+export const saveTransaction = (
+  id: Bytes,
+  transactionHash: Bytes,
+  merkleRoot: Bytes,
+  nullifiers: Bytes[],
+  commitments: Bytes[]
+): Transaction => {
+  const entity = new Transaction(id);
+  entity.transactionHash = transactionHash;
+  entity.merkleRoot = merkleRoot;
+  entity.nullifiers = nullifiers.map<Bytes>((e) => e);
+  entity.commitments = commitments.map<Bytes>((e) => e);
+  entity.save();
+  return entity;
+};
+
+export const saveTransactCall = (
+  blockNumber: BigInt,
+  blockTimestamp: BigInt,
+  transactionHash: Bytes
+): TransactCall => {
+  const id = transactionHash;
+  const entity = new TransactCall(id);
+  entity.blockNumber = blockNumber;
+  entity.blockTimestamp = blockTimestamp;
+  entity.transactionHash = transactionHash;
+  entity.save();
+  return entity;
+};
+
 export const saveTransactCommitment = (
   id: Bytes,
   blockNumber: BigInt,
@@ -240,11 +272,11 @@ export const saveTransactCommitment = (
   batchStartTreePosition: BigInt,
   treePosition: BigInt,
   commitmentHash: BigInt,
-  ciphertext: CommitmentCiphertext,
+  ciphertext: CommitmentCiphertext
 ): TransactCommitment => {
   const entity = new TransactCommitment(id);
 
-  entity.commitmentType = 'TransactCommitment';
+  entity.commitmentType = "TransactCommitment";
 
   entity.blockNumber = blockNumber;
   entity.blockTimestamp = blockTimestamp;
@@ -270,7 +302,7 @@ export const saveUnshield = (
   token: Token,
   amount: BigInt,
   fee: BigInt,
-  eventLogIndex: BigInt,
+  eventLogIndex: BigInt
 ): Unshield => {
   const entity = new Unshield(id);
 

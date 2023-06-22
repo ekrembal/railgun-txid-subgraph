@@ -132,6 +132,30 @@ type TransactCommitment implements Commitment @entity(immutable: true) {
   ciphertext: CommitmentCiphertext!
 }
 
+type TransactCall @entity{
+  id: Bytes! # transaction hash
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Transaction implements TransactionInterface @entity(immutable: true) {
+  id: Bytes! # transaction hash
+  transactionHash: Bytes!
+  merkleRoot: Bytes!
+  nullifiers: [Bytes!]!
+  commitments: [Bytes!]!
+}
+
+interface TransactionInterface {
+  id: Bytes! # transaction hash
+  transactionHash: Bytes!
+  merkleRoot: Bytes!
+  nullifiers: [Bytes!]!
+  commitments: [Bytes!]!
+}
+
+
 type Unshield @entity(immutable: true) {
   id: Bytes! # transaction hash + event log index
   blockNumber: BigInt!
