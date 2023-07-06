@@ -1,4 +1,4 @@
-import { Bytes, BigInt as BigIntGraph, log } from "@graphprotocol/graph-ts";
+import { Bytes, BigInt, log } from "@graphprotocol/graph-ts";
 import {
   Nullifiers as NullifiersEvent,
   CommitmentBatch as CommitmentBatchEvent,
@@ -9,6 +9,7 @@ import {
   Shield as ShieldEvent,
   Shield1 as ShieldLegacyEvent,
   TransactCall,
+  Transact1Call,
 } from "../generated/RailgunSmartWallet/RailgunSmartWallet";
 import { bigIntToBytes, reversedBytesToBigInt } from "./utils";
 import {
@@ -41,9 +42,9 @@ const SHOULD_DEBUG_LOG = false;
  */
 // export function bytesToBigInt(str: string): bigint {
 //   if (str.startsWith("0x")) {
-//     return BigIntGraph.fromI32(0);
+//     return BigInt.fromI32(0);
 //   }
-//   return BigIntGraph.fromI32(0);
+//   return BigInt.fromI32(0);
 // }
 
 
@@ -54,7 +55,7 @@ export function handleTransactionCall(call: TransactCall): void {
     const id = idFrom3PaddedBigInts(
       call.block.number,
       call.transaction.index,
-      BigIntGraph.fromI32(i)
+      BigInt.fromI32(i)
     )
     saveTransaction(
       id,
@@ -62,7 +63,6 @@ export function handleTransactionCall(call: TransactCall): void {
       call.inputs._transactions[i].merkleRoot,
       call.inputs._transactions[i].nullifiers,
       call.inputs._transactions[i].commitments
-      
     );
   }
   saveTransactCall(
@@ -70,6 +70,35 @@ export function handleTransactionCall(call: TransactCall): void {
     call.block.timestamp,
     call.transaction.hash
   );
+}
+
+export function handleLegacyTransactionCall(call: Transact1Call): void {
+  for (let i = 0; i < call.inputs._transactions.length; i++) {
+    const id = idFrom3PaddedBigInts(
+      call.block.number,
+      call.transaction.index,
+      BigInt.fromI32(i)
+    )
+
+    const merkleRoot = Bytes.fromUint8Array(call.inputs._transactions[i].merkleRoot);
+    const nullifiers: Bytes[] = call.inputs._transactions[i].nullifiers.map<Bytes>((x: BigInt):Bytes => Bytes.fromByteArray(Bytes.fromBigInt(x)));
+    const commitments: Bytes[] = call.inputs._transactions[i].commitments.map<Bytes>((x: BigInt):Bytes => Bytes.fromByteArray(Bytes.fromBigInt(x)));
+
+    saveTransaction(
+      id,
+      call.transaction.hash,
+      merkleRoot,
+      nullifiers,
+      commitments
+    );
+
+  }
+  saveTransactCall(
+    call.block.number,
+    call.block.timestamp,
+    call.transaction.hash
+  );
+
 }
 
 export function handleTransact(event: TransactEvent): void {
@@ -80,7 +109,7 @@ export function handleTransact(event: TransactEvent): void {
     const index = i;
 
     const treePosition = event.params.startPosition.plus(
-      BigIntGraph.fromString(index.toString())
+      BigInt.fromString(index.toString())
     );
     const id = idFrom2PaddedBigInts(event.params.treeNumber, treePosition);
 
@@ -120,3 +149,5 @@ export function handleTransact(event: TransactEvent): void {
     );
   }
 }
+
+
