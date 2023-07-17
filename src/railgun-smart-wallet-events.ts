@@ -81,8 +81,8 @@ export function handleLegacyTransactionCall(call: Transact1Call): void {
     )
 
     const merkleRoot = Bytes.fromUint8Array(call.inputs._transactions[i].merkleRoot);
-    const nullifiers: Bytes[] = call.inputs._transactions[i].nullifiers.map<Bytes>((x: BigInt):Bytes => Bytes.fromByteArray(Bytes.fromBigInt(x)));
-    const commitments: Bytes[] = call.inputs._transactions[i].commitments.map<Bytes>((x: BigInt):Bytes => Bytes.fromByteArray(Bytes.fromBigInt(x)));
+    const nullifiers: Bytes[] = call.inputs._transactions[i].nullifiers.map<Bytes>((x: BigInt):Bytes => Bytes.fromByteArray(Bytes.fromBigInt(x)).reverse());
+    const commitments: Bytes[] = call.inputs._transactions[i].commitments.map<Bytes>((x: BigInt):Bytes => Bytes.fromByteArray(Bytes.fromBigInt(x)).reverse());
 
     saveTransaction(
       id,
