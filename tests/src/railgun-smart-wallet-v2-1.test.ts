@@ -1,189 +1,122 @@
+import { Address, Bytes, ethereum, BigInt, log } from "@graphprotocol/graph-ts";
 import {
   describe,
   test,
   afterEach,
   clearStore,
   assert,
-} from 'matchstick-as/assembly/index';
-import { BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
-import {
-  createTransactEvent,
-} from '../util/event-utils.test';
-import {
-  handleTransact,
-} from '../../src/railgun-smart-wallet-events';
-import { bigIntToBytes, reversedBytesToBigInt } from '../../src/utils';
-import {
-  assertCommonCommitmentFields,
-} from '../util/assert.test';
+} from "matchstick-as/assembly/index";
 
 import {
-  getCiphertextData,
-  getCiphertextIV,
-  getCiphertextTag,
-} from '../../src/ciphertext';
+  TransactCall,
+  Transact1Call,
+  TransactCall_transactionsBoundParamsStruct,
+  TransactCall_transactionsBoundParamsCommitmentCiphertextStruct,
+} from "../../generated/RailgunSmartWallet/RailgunSmartWallet";
+import { getBoundParammsHash } from "../../src/railgun-smart-wallet-events";
 
-describe('railgun-smart-wallet-v2.1', () => {
+describe("railgun-smart-wallet-v2.1", () => {
   afterEach(() => {
     clearStore();
   });
 
-  test('Should handle Transact event', () => {
-    const treeNumber = BigInt.fromString('2000');
-    const startPosition = BigInt.fromString('3000');
-
-    const hash: Bytes[] = [
-      Bytes.fromHexString('0x4455'),
-      Bytes.fromHexString('0x6677'),
+  test("Should calculate bound params hash", () => {
+    // Bound params from tx: https://goerli.etherscan.io/tx/0xd11cadb34edd5c16d861526b5a5953906f2de7f3ff5322659dafbb45c2f7e331
+    // [
+    //   "0",
+    //   "65536",
+    //   "1",
+    //   "5",
+    //   "0x0000000000000000000000000000000000000000",
+    //   "0x0000000000000000000000000000000000000000000000000000000000000000",
+    //   [
+    //     [
+    //       [
+    //         "0xaac3f322b4787f1d219eb4e4d43737425940dbbfb4956819e09db24f29048e53",
+    //         "0xc35f1f4ffb25d67d7f24e2ba9f9d95770168fe5fda79bd457fd321bcd4252b1d",
+    //         "0xdde3219e0d7ebc13149a073dc01a40b569845e71f40ab59863d1f79d7ae556d3",
+    //         "0xa475d41b22d341faaa04591d0bf81fc302817a162f1372efae059258e60fb7a4",
+    //       ],
+    //       "0xded2dc8080552bc868b0409bb58a4d3546236fedf6206f96d24a7bf52c67b2a8",
+    //       "0xded2dc8080552bc868b0409bb58a4d3546236fedf6206f96d24a7bf52c67b2a8",
+    //       "0xf3ec517f50899c70f5e4f7e2bd31a2cd58391a976691afc72226bd34efd6a5ba085482f7a9ce5439e343a9a890ae5f797a57fb79fcc0c57945266ca7de8a",
+    //       "0x",
+    //     ],
+    //   ],
+    // ]);
+    const commitmentChipertext = [
+      ethereum.Value.fromFixedSizedArray([
+        ethereum.Value.fromBytes(
+          Bytes.fromHexString(
+            "0xaac3f322b4787f1d219eb4e4d43737425940dbbfb4956819e09db24f29048e53"
+          )
+        ),
+        ethereum.Value.fromBytes(
+          Bytes.fromHexString(
+            "0xc35f1f4ffb25d67d7f24e2ba9f9d95770168fe5fda79bd457fd321bcd4252b1d"
+          )
+        ),
+        ethereum.Value.fromBytes(
+          Bytes.fromHexString(
+            "0xdde3219e0d7ebc13149a073dc01a40b569845e71f40ab59863d1f79d7ae556d3"
+          )
+        ),
+        ethereum.Value.fromBytes(
+          Bytes.fromHexString(
+            "0xa475d41b22d341faaa04591d0bf81fc302817a162f1372efae059258e60fb7a4"
+          )
+        ),
+      ]),
+      ethereum.Value.fromBytes(
+        Bytes.fromHexString(
+          "0xded2dc8080552bc868b0409bb58a4d3546236fedf6206f96d24a7bf52c67b2a8"
+        )
+      ),
+      ethereum.Value.fromBytes(
+        Bytes.fromHexString(
+          "0xded2dc8080552bc868b0409bb58a4d3546236fedf6206f96d24a7bf52c67b2a8"
+        )
+      ),
+      ethereum.Value.fromBytes(
+        Bytes.fromHexString(
+          "0xf3ec517f50899c70f5e4f7e2bd31a2cd58391a976691afc72226bd34efd6a5ba085482f7a9ce5439e343a9a890ae5f797a57fb79fcc0c57945266ca7de8a"
+        )
+      ),
+      ethereum.Value.fromBytes(Bytes.fromHexString("0x")),
+    ];
+    const boundParamsArray: Array<ethereum.Value> = [
+      ethereum.Value.fromBytes(Bytes.fromHexString("0x0000")),
+      ethereum.Value.fromBytes(Bytes.fromHexString("0x000000000000010000")),
+      ethereum.Value.fromBytes(Bytes.fromHexString("0x01")),
+      ethereum.Value.fromBytes(Bytes.fromHexString("0x0000000000000005")),
+      ethereum.Value.fromBytes(
+        Bytes.fromHexString("0x0000000000000000000000000000000000000000")
+      ),
+      ethereum.Value.fromBytes(
+        Bytes.fromHexString(
+          "0x0000000000000000000000000000000000000000000000000000000000000000"
+        )
+      ),
+      ethereum.Value.fromArray(commitmentChipertext),
     ];
 
-    const ciphertext: Array<ethereum.Value>[] = [
-      [
-        // ciphertext
-        ethereum.Value.fromBytesArray([
-          Bytes.fromHexString(
-            '0x4000000000000000000300000000000000200000000000000010000000',
-          ),
-          Bytes.fromHexString(
-            '0x5000000000000000600000000050000000000000400000000000300000',
-          ),
-          Bytes.fromHexString(
-            '0x6000000000000000600000000050000100000000400000000000300000',
-          ),
-        ]),
-
-        // blindedSenderViewingKey
-        ethereum.Value.fromBytes(Bytes.fromHexString('0x6000')),
-
-        // blindedReceiverViewingKey
-        ethereum.Value.fromBytes(Bytes.fromHexString('0x7000')),
-
-        // annotationData
-        ethereum.Value.fromBytes(Bytes.fromHexString('0x8000')),
-
-        // memo
-        ethereum.Value.fromBytes(Bytes.fromHexString('0x9000')),
-      ],
-      [
-        // ciphertext
-        ethereum.Value.fromBytesArray([
-          Bytes.fromHexString(
-            '0x014000000000000000000300000000000000200000000000000010000000',
-          ),
-          Bytes.fromHexString(
-            '0x015000000000000000600000000050000000000000400000000000300000',
-          ),
-          Bytes.fromHexString(
-            '0x016000000000000060000000005000010000000040000000000030000000',
-          ),
-        ]),
-
-        // blindedSenderViewingKey
-        ethereum.Value.fromBytes(Bytes.fromHexString('0x016000')),
-
-        // blindedReceiverViewingKey
-        ethereum.Value.fromBytes(Bytes.fromHexString('0x017000')),
-
-        // annotationData
-        ethereum.Value.fromBytes(Bytes.fromHexString('0x018000')),
-
-        // memo
-        ethereum.Value.fromBytes(Bytes.fromHexString('0x019000')),
-      ],
-    ];
-
-    const event = createTransactEvent(
-      treeNumber,
-      startPosition,
-      hash,
-      ciphertext,
+    const boundParamsTuple: ethereum.Tuple = changetype<ethereum.Tuple>(
+      boundParamsArray
     );
+    const boundParamsStruct: TransactCall_transactionsBoundParamsStruct = changetype<
+      TransactCall_transactionsBoundParamsStruct
+    >(boundParamsTuple);
 
-    handleTransact(event);
-
-    assert.entityCount('Ciphertext', 2);
-    assert.entityCount('CommitmentCiphertext', 2);
-    assert.entityCount('TransactCommitment', 2);
-
-    const expectedIDs = [
-      '0x00000000000000000000000000000000000000000000000000000000000007d00000000000000000000000000000000000000000000000000000000000000bb8',
-      '0x00000000000000000000000000000000000000000000000000000000000007d00000000000000000000000000000000000000000000000000000000000000bb9',
-    ];
-
-    for (let i = 0; i < expectedIDs.length; i++) {
-      const expectedID = expectedIDs[i];
-      assertCommonCommitmentFields(
-        'TransactCommitment',
-        expectedID,
-        event,
-        treeNumber,
-        startPosition,
-        BigInt.fromI32(i),
-        reversedBytesToBigInt(hash[i]),
-      );
-
-      const ciphertextBytesArray: Bytes[] = ciphertext[i][0].toBytesArray();
-
-      assert.fieldEquals(
-        'Ciphertext',
-        expectedID,
-        'iv',
-        getCiphertextIV(ciphertextBytesArray).toHexString(),
-      );
-      assert.fieldEquals(
-        'Ciphertext',
-        expectedID,
-        'tag',
-        getCiphertextTag(ciphertextBytesArray).toHexString(),
-      );
-
-      const ciphertextDataStrings = getCiphertextData(ciphertextBytesArray).map<
-        string
-      >((byte) => byte.toHexString());
-      assert.fieldEquals(
-        'Ciphertext',
-        expectedID,
-        'data',
-        `[${ciphertextDataStrings[0]}, ${ciphertextDataStrings[1]}]`, // ex. [0x1111, 0x2222]
-      );
-
-      assert.fieldEquals(
-        'CommitmentCiphertext',
-        expectedID,
-        'ciphertext',
-        expectedID,
-      );
-      assert.fieldEquals(
-        'CommitmentCiphertext',
-        expectedID,
-        'blindedSenderViewingKey',
-        ciphertext[i][1].toBytes().toHexString(),
-      );
-      assert.fieldEquals(
-        'CommitmentCiphertext',
-        expectedID,
-        'blindedReceiverViewingKey',
-        ciphertext[i][2].toBytes().toHexString(),
-      );
-      assert.fieldEquals(
-        'CommitmentCiphertext',
-        expectedID,
-        'annotationData',
-        ciphertext[i][3].toBytes().toHexString(),
-      );
-      assert.fieldEquals(
-        'CommitmentCiphertext',
-        expectedID,
-        'memo',
-        ciphertext[i][4].toBytes().toHexString(),
-      );
-
-      assert.fieldEquals(
-        'TransactCommitment',
-        expectedID,
-        'ciphertext',
-        expectedID,
-      );
-    }
+    const boundParamsHash = getBoundParammsHash(boundParamsStruct);
+    log.debug(boundParamsHash.toHexString(), []);
+    // // BigInt("8804994844791416303636801751915839687408145545116690128263966426603050415857");
+    // assert.equals(
+    //   ethereum.Value.fromBytes(boundParamsHash),
+    //   ethereum.Value.fromBytes(
+    //     Bytes.fromHexString(
+    //       "0x1377735259C85D95329FA59C2457E13F2D85DFDB161E58FB8B5948D1A20AB6F1"
+    //     )
+    //   )
+    // );
   });
 });

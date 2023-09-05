@@ -1,137 +1,3 @@
-# Sync with TS enum in railgun-smart-wallet.ts
-enum CommitmentType {
-  ShieldCommitment
-  TransactCommitment
-  LegacyGeneratedCommitment
-  LegacyEncryptedCommitment
-}
-
-# Sync with TS enum in railgun-smart-wallet.ts
-enum TokenType {
-  ERC20
-  ERC721
-  ERC1155
-}
-
-type Token @entity(immutable: true) {
-  id: Bytes! # output of getTokenID()
-  tokenType: TokenType!
-  tokenAddress: Bytes! #address
-  tokenSubID: Bytes!
-}
-
-type CommitmentPreimage @entity(immutable: true) {
-  id: Bytes! # commitment hash
-  npk: Bytes!
-  token: Token!
-  value: BigInt!
-}
-
-type Ciphertext @entity(immutable: true) {
-  id: Bytes! # commitment hash
-  iv: Bytes!
-  tag: Bytes!
-  data: [Bytes!]!
-}
-
-type LegacyCommitmentCiphertext @entity(immutable: true) {
-  id: Bytes! # commitment hash
-  ciphertext: Ciphertext!
-  ephemeralKeys: [Bytes!]!
-  memo: [Bytes!]!
-}
-
-type CommitmentCiphertext @entity(immutable: true) {
-  id: Bytes! # commitment hash
-  ciphertext: Ciphertext!
-  blindedSenderViewingKey: Bytes!
-  blindedReceiverViewingKey: Bytes!
-  annotationData: Bytes!
-  memo: Bytes!
-}
-
-# We use an Interface in order to query all Commitment types at once,
-#  but retain strong typings for individual fields.
-interface Commitment {
-  id: Bytes! # tree number + tree position
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-  treeNumber: Int!
-  batchStartTreePosition: Int!
-  treePosition: Int!
-  commitmentType: CommitmentType!
-  hash: BigInt!
-}
-
-type LegacyGeneratedCommitment implements Commitment @entity(immutable: true) {
-  # Common interface values
-  id: Bytes! # tree number + tree position
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-  treeNumber: Int!
-  batchStartTreePosition: Int!
-  treePosition: Int!
-  commitmentType: CommitmentType!
-  hash: BigInt!
-
-  # Custom values: GeneratedCommitmentBatch event
-  preimage: CommitmentPreimage!
-  encryptedRandom: [Bytes!]!
-}
-
-type LegacyEncryptedCommitment implements Commitment @entity(immutable: true) {
-  # Common interface values
-  id: Bytes! # tree number + tree position
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-  treeNumber: Int!
-  batchStartTreePosition: Int!
-  treePosition: Int!
-  commitmentType: CommitmentType!
-  hash: BigInt!
-
-  # Custom values: CommitmentBatch event
-  ciphertext: LegacyCommitmentCiphertext!
-}
-
-type ShieldCommitment implements Commitment @entity(immutable: true) {
-  # Common interface values
-  id: Bytes! # tree number + tree position
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-  treeNumber: Int!
-  batchStartTreePosition: Int!
-  treePosition: Int!
-  commitmentType: CommitmentType!
-  hash: BigInt!
-
-  # Custom values: Shield event
-  preimage: CommitmentPreimage!
-  encryptedBundle: [Bytes!]!
-  shieldKey: Bytes!
-  fee: BigInt # optional
-}
-
-type TransactCommitment implements Commitment @entity(immutable: true) {
-  # Common interface values
-  id: Bytes! # tree number + tree position
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-  treeNumber: Int!
-  batchStartTreePosition: Int!
-  treePosition: Int!
-  commitmentType: CommitmentType!
-  hash: BigInt!
-
-  # Custom values: Transact event
-  ciphertext: CommitmentCiphertext!
-}
-
 type TransactCall @entity{
   id: Bytes! # transaction hash
   blockNumber: BigInt!
@@ -145,6 +11,7 @@ type Transaction implements TransactionInterface @entity(immutable: true) {
   merkleRoot: Bytes!
   nullifiers: [Bytes!]!
   commitments: [Bytes!]!
+  boundParams: Bytes!
 }
 
 interface TransactionInterface {
@@ -153,30 +20,5 @@ interface TransactionInterface {
   merkleRoot: Bytes!
   nullifiers: [Bytes!]!
   commitments: [Bytes!]!
-}
-
-
-type Unshield @entity(immutable: true) {
-  id: Bytes! # transaction hash + event log index
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-
-  # Custom required values
-  to: Bytes! #address
-  token: Token!
-  amount: BigInt!
-  fee: BigInt!
-  eventLogIndex: BigInt!
-}
-
-type Nullifier @entity(immutable: true) {
-  id: Bytes! # transaction hash + event log index
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-
-  # Custom required values
-  treeNumber: Int!
-  nullifier: Bytes!
+  boundParams: Bytes!
 }
