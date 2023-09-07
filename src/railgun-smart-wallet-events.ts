@@ -27,7 +27,7 @@ export const getBoundParammsHash = (
     ethereum.Value.fromTuple(boundParams)
   ) as Bytes;
 
-  log.debug(combinedData.toHexString(), []);
+  // log.debug(combinedData.toHexString(), []);
 
   const hashed = crypto.keccak256(combinedData);
 

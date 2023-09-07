@@ -11,7 +11,7 @@ type Transaction implements TransactionInterface @entity(immutable: true) {
   merkleRoot: Bytes!
   nullifiers: [Bytes!]!
   commitments: [Bytes!]!
-  boundParams: Bytes!
+  boundParamsHash: Bytes!
 }
 
 interface TransactionInterface {
@@ -20,5 +20,5 @@ interface TransactionInterface {
   merkleRoot: Bytes!
   nullifiers: [Bytes!]!
   commitments: [Bytes!]!
-  boundParams: Bytes!
+  boundParamsHash: Bytes!
 }

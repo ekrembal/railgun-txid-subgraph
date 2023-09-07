@@ -17,7 +17,7 @@ export const saveTransaction = (
   entity.merkleRoot = merkleRoot;
   entity.nullifiers = nullifiers.map<Bytes>((e) => e);
   entity.commitments = commitments.map<Bytes>((e) => e);
-  entity.boundParams = boundParams;
+  entity.boundParamsHash = boundParams;
   entity.save();
   return entity;
 };
