@@ -5,19 +5,9 @@ import {
   TransactCall_transactionsBoundParamsStruct,
   Transact1Call_transactionsBoundParamsStruct,
 } from "../generated/RailgunSmartWallet/RailgunSmartWallet";
-import {
-  SNARK_PRIME_BIG_INT,
-  bigIntToBytes,
-  reverseBytes,
-} from "./utils";
-import {
-  saveTransactCall,
-  saveTransaction,
-} from "./entity";
-import {
-  idFrom3PaddedBigInts,
-} from "./id";
-
+import { SNARK_PRIME_BIG_INT, bigIntToBytes, reverseBytes } from "./utils";
+import { saveTransaction } from "./entity";
+import { idFrom3PaddedBigInts } from "./id";
 
 export const getBoundParammsHash = (
   boundParams: TransactCall_transactionsBoundParamsStruct
@@ -65,6 +55,7 @@ export function handleTransactionCall(call: TransactCall): void {
     );
     saveTransaction(
       id,
+      call.block.number,
       call.transaction.hash,
       call.inputs._transactions[i].merkleRoot,
       call.inputs._transactions[i].nullifiers,
@@ -72,11 +63,6 @@ export function handleTransactionCall(call: TransactCall): void {
       getBoundParammsHash(call.inputs._transactions[i].boundParams)
     );
   }
-  saveTransactCall(
-    call.block.number,
-    call.block.timestamp,
-    call.transaction.hash
-  );
 }
 
 export function handleLegacyTransactionCall(call: Transact1Call): void {
@@ -103,6 +89,7 @@ export function handleLegacyTransactionCall(call: Transact1Call): void {
 
     saveTransaction(
       id,
+      call.block.number,
       call.transaction.hash,
       merkleRoot,
       nullifiers,
@@ -110,9 +97,4 @@ export function handleLegacyTransactionCall(call: Transact1Call): void {
       getBoundParammsHashLegacy(call.inputs._transactions[i].boundParams)
     );
   }
-  saveTransactCall(
-    call.block.number,
-    call.block.timestamp,
-    call.transaction.hash
-  );
 }

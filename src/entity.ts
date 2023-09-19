@@ -1,11 +1,9 @@
 import { Bytes, BigInt } from "@graphprotocol/graph-ts";
-import {
-  TransactCall,
-  Transaction,
-} from "../generated/schema";
+import { Transaction } from "../generated/schema";
 
 export const saveTransaction = (
   id: Bytes,
+  blockNumber: BigInt,
   transactionHash: Bytes,
   merkleRoot: Bytes,
   nullifiers: Bytes[],
@@ -14,24 +12,11 @@ export const saveTransaction = (
 ): Transaction => {
   const entity = new Transaction(id);
   entity.transactionHash = transactionHash;
+  entity.blockNumber = blockNumber;
   entity.merkleRoot = merkleRoot;
   entity.nullifiers = nullifiers.map<Bytes>((e) => e);
   entity.commitments = commitments.map<Bytes>((e) => e);
   entity.boundParamsHash = boundParams;
-  entity.save();
-  return entity;
-};
-
-export const saveTransactCall = (
-  blockNumber: BigInt,
-  blockTimestamp: BigInt,
-  transactionHash: Bytes
-): TransactCall => {
-  const id = transactionHash;
-  const entity = new TransactCall(id);
-  entity.blockNumber = blockNumber;
-  entity.blockTimestamp = blockTimestamp;
-  entity.transactionHash = transactionHash;
   entity.save();
   return entity;
 };

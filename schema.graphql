@@ -1,12 +1,6 @@
-type TransactCall @entity{
-  id: Bytes! # transaction hash
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
 type Transaction implements TransactionInterface @entity(immutable: true) {
-  id: Bytes! # transaction hash
+  id: Bytes!
+  blockNumber: BigInt!
   transactionHash: Bytes!
   merkleRoot: Bytes!
   nullifiers: [Bytes!]!
@@ -15,7 +9,8 @@ type Transaction implements TransactionInterface @entity(immutable: true) {
 }
 
 interface TransactionInterface {
-  id: Bytes! # transaction hash
+  id: Bytes!
+  blockNumber: BigInt!
   transactionHash: Bytes!
   merkleRoot: Bytes!
   nullifiers: [Bytes!]!

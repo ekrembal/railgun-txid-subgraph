@@ -2,8 +2,8 @@
 
 graph build --network mainnet && graph deploy --product hosted-service ekrembal/railgun-transactions-ethereum; \
 graph build --network goerli && graph deploy --product hosted-service ekrembal/railgun-transactions-goerli; \
-graph build --network bsc && graph deploy --product hosted-service ekrembal/railgun-transactions-bsc; \
-graph build --network matic && graph deploy --product hosted-service ekrembal/railgun-transactions-polygon; \
-graph build --network mumbai && graph deploy --product hosted-service ekrembal/railgun-transactions-mumbai; \
-graph build --network arbitrum-one && graph deploy --product hosted-service ekrembal/railgun-transactions-arbitrum; \
-graph build --network arbitrum-goerli && graph deploy --product hosted-service ekrembal/railgun-txs-arbitrum-goerli;
+# graph build --network bsc && graph deploy --product hosted-service ekrembal/railgun-transactions-bsc; \
+# graph build --network matic && graph deploy --product hosted-service ekrembal/railgun-transactions-polygon; \
+# graph build --network mumbai && graph deploy --product hosted-service ekrembal/railgun-transactions-mumbai; \
+# graph build --network arbitrum-one && graph deploy --product hosted-service ekrembal/railgun-transactions-arbitrum; \
+# graph build --network arbitrum-goerli && graph deploy --product hosted-service ekrembal/railgun-txs-arbitrum-goerli;
