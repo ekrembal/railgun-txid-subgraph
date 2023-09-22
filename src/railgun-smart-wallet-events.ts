@@ -60,7 +60,8 @@ export function handleTransactionCall(call: TransactCall): void {
       call.inputs._transactions[i].merkleRoot,
       call.inputs._transactions[i].nullifiers,
       call.inputs._transactions[i].commitments,
-      getBoundParammsHash(call.inputs._transactions[i].boundParams)
+      getBoundParammsHash(call.inputs._transactions[i].boundParams),
+      call.inputs._transactions[i].boundParams.unshield != 0
     );
   }
 }
@@ -94,7 +95,8 @@ export function handleLegacyTransactionCall(call: Transact1Call): void {
       merkleRoot,
       nullifiers,
       commitments,
-      getBoundParammsHashLegacy(call.inputs._transactions[i].boundParams)
+      getBoundParammsHashLegacy(call.inputs._transactions[i].boundParams),
+      call.inputs._transactions[i].boundParams.withdraw != 0
     );
   }
 }
