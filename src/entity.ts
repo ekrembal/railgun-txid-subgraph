@@ -11,6 +11,8 @@ import {
   Ciphertext,
   Unshield,
   Nullifier,
+  Transaction,
+  CommitmentBatchEventNew
 } from '../generated/schema';
 import {
   getCiphertextData,
@@ -288,3 +290,43 @@ export const saveUnshield = (
   entity.save();
   return entity;
 };
+
+
+
+export const saveTransaction = (
+  id: Bytes,
+  blockNumber: BigInt,
+  transactionHash: Bytes,
+  merkleRoot: Bytes,
+  nullifiers: Bytes[],
+  commitments: Bytes[],
+  boundParams: Bytes,
+  isUnshield: boolean,
+  treeNumber: BigInt,
+  batchStartTreePosition: BigInt,
+): Transaction => {
+  const entity = new Transaction(id);
+  entity.transactionHash = transactionHash;
+  entity.blockNumber = blockNumber;
+  entity.merkleRoot = merkleRoot;
+  entity.nullifiers = nullifiers.map<Bytes>((e) => e);
+  entity.commitments = commitments.map<Bytes>((e) => e);
+  entity.boundParamsHash = boundParams;
+  entity.isUnshield = isUnshield;
+  entity.treeNumber = treeNumber;
+  entity.batchStartTreePosition = batchStartTreePosition;
+  entity.save();
+  return entity;
+};
+
+export const saveCommitmentBatchEvent = (
+  id: Bytes,
+  treeNumber: BigInt,
+  batchStartTreePosition: BigInt,
+): CommitmentBatchEventNew => {
+  const entity = new CommitmentBatchEventNew(id);
+  entity.treeNumber = treeNumber;
+  entity.batchStartTreePosition = batchStartTreePosition;
+  entity.save();
+  return entity;
+}

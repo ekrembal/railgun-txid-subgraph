@@ -44,3 +44,7 @@ export const bigIntToBytes = (bigint: BigInt): Bytes => {
 export const reversedBytesToBigInt = (bytes: Bytes): BigInt => {
   return BigInt.fromUnsignedBytes(reverseBytes(bytes));
 };
+
+export const SNARK_PRIME_BIG_INT = BigInt.fromString(
+  '21888242871839275222246405745257275088548364400416034343698204186575808495617',
+);

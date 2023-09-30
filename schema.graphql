@@ -50,6 +50,13 @@ type CommitmentCiphertext @entity(immutable: true) {
   memo: Bytes!
 }
 
+type CommitmentBatchEventNew @entity(immutable: true) {
+  id: Bytes! # commitment hash
+  treeNumber: BigInt!
+  batchStartTreePosition: BigInt!
+}
+
+
 # We use an Interface in order to query all Commitment types at once,
 #  but retain strong typings for individual fields.
 interface Commitment {
@@ -155,4 +162,30 @@ type Nullifier @entity(immutable: true) {
   # Custom required values
   treeNumber: Int!
   nullifier: Bytes!
+}
+
+type Transaction implements TransactionInterface @entity(immutable: true) {
+  id: Bytes!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+  merkleRoot: Bytes!
+  nullifiers: [Bytes!]!
+  commitments: [Bytes!]!
+  boundParamsHash: Bytes!
+  isUnshield: Boolean!
+  treeNumber: BigInt!
+  batchStartTreePosition: BigInt!
+}
+
+interface TransactionInterface {
+  id: Bytes!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+  merkleRoot: Bytes!
+  nullifiers: [Bytes!]!
+  commitments: [Bytes!]!
+  boundParamsHash: Bytes!
+  isUnshield: Boolean!
+  treeNumber: BigInt!
+  batchStartTreePosition: BigInt!
 }
