@@ -172,7 +172,7 @@ type Transaction implements TransactionInterface @entity(immutable: true) {
   nullifiers: [Bytes!]!
   commitments: [Bytes!]!
   boundParamsHash: Bytes!
-  isUnshield: Boolean!
+  hasUnshield: Boolean!
   utxoTreeIn: BigInt!
   utxoTreeOut: BigInt!
   utxoBatchStartPositionOut: BigInt!
@@ -186,7 +186,7 @@ interface TransactionInterface {
   nullifiers: [Bytes!]!
   commitments: [Bytes!]!
   boundParamsHash: Bytes!
-  isUnshield: Boolean!
+  hasUnshield: Boolean!
   utxoTreeIn: BigInt!
   utxoTreeOut: BigInt!
   utxoBatchStartPositionOut: BigInt!

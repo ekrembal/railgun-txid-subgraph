@@ -313,7 +313,7 @@ export const saveTransaction = (
   entity.nullifiers = nullifiers.map<Bytes>((e) => e);
   entity.commitments = commitments.map<Bytes>((e) => e);
   entity.boundParamsHash = boundParams;
-  entity.isUnshield = isUnshield;
+  entity.hasUnshield = isUnshield;
   entity.utxoTreeIn = inputTreeNumber;
   entity.utxoTreeOut = outputTreeNumber;
   entity.utxoBatchStartPositionOut = batchStartTreePosition;
