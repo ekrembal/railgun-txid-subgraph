@@ -10,6 +10,8 @@ import {
   Shield1 as ShieldLegacyEvent,
   TransactCall,
   TransactCall_transactionsBoundParamsStruct,
+  Transact1Call,
+  Transact1Call_transactionsBoundParamsStruct,
 } from "../generated/RailgunSmartWallet/RailgunSmartWallet";
 import {
   SNARK_PRIME_BIG_INT,
@@ -137,6 +139,12 @@ export function handleGeneratedCommitmentBatch(
       event.params.encryptedRandom[index]
     );
   }
+  const id = idFrom2PaddedBigInts(event.block.number, event.transaction.index);
+  saveCommitmentBatchEvent(
+    id,
+    event.params.treeNumber,
+    event.params.startPosition
+  );
 }
 
 export function handleCommitmentBatch(event: CommitmentBatchEvent): void {
@@ -188,6 +196,13 @@ export function handleCommitmentBatch(event: CommitmentBatchEvent): void {
       legacyCommitmentCiphertext
     );
   }
+
+  const id = idFrom2PaddedBigInts(event.block.number, event.transaction.index);
+  saveCommitmentBatchEvent(
+    id,
+    event.params.treeNumber,
+    event.params.startPosition
+  );
 }
 
 // Engine V3 (Nov 2022)
@@ -302,7 +317,6 @@ export function handleTransact(event: TransactEvent): void {
     );
   }
   const id = idFrom2PaddedBigInts(event.block.number, event.transaction.index);
-
   saveCommitmentBatchEvent(
     id,
     event.params.treeNumber,
@@ -430,7 +444,7 @@ export function handleShield(event: ShieldEvent): void {
   }
 }
 
-export const getBoundParammsHash = (
+export const getBoundParamsHash = (
   boundParams: TransactCall_transactionsBoundParamsStruct
 ): Bytes => {
   // log.debug(ethereum.Value.fromTuple(boundParams).toString(), []);
@@ -449,15 +463,37 @@ export const getBoundParammsHash = (
   return bigIntToBytes(modulo);
 };
 
+export const getBoundParamsHashLegacy = (
+  boundParams: Transact1Call_transactionsBoundParamsStruct
+): Bytes => {
+  const combinedData = ethereum.encode(
+    ethereum.Value.fromTuple(boundParams)
+  ) as Bytes;
+
+  const hashed = crypto.keccak256(combinedData);
+
+  const bytesReversed = reverseBytes(Bytes.fromByteArray(hashed));
+  const modulo = BigInt.fromUnsignedBytes(bytesReversed).mod(
+    SNARK_PRIME_BIG_INT
+  );
+  return bigIntToBytes(modulo);
+};
+
 export function handleTransactionCall(call: TransactCall): void {
   let commitmentBatchEventNew = CommitmentBatchEventNew.load(
     idFrom2PaddedBigInts(call.block.number, call.transaction.index)
   );
-  if(commitmentBatchEventNew == null) {
-    return;
+  let batchStartTreePosition = BigInt.fromI64(123465);
+  let treeNumber = BigInt.fromI64(123465);
+  if (commitmentBatchEventNew == null) {
+    log.debug("CommitmentBatchEventNew not found for block {}, index {}", [
+      call.block.number.toString(),
+      call.transaction.index.toString(),
+    ]);
+  } else {
+    batchStartTreePosition = commitmentBatchEventNew.batchStartTreePosition;
+    treeNumber = commitmentBatchEventNew.treeNumber;
   }
-  let batchStartTreePosition = commitmentBatchEventNew.batchStartTreePosition;
-
 
   for (let i = 0; i < call.inputs._transactions.length; i++) {
     // const x = poseidon(call.inputs._transactions[i].nullifiers.map((x) => bigint(x)));
@@ -474,12 +510,69 @@ export function handleTransactionCall(call: TransactCall): void {
       call.inputs._transactions[i].merkleRoot,
       call.inputs._transactions[i].nullifiers,
       call.inputs._transactions[i].commitments,
-      getBoundParammsHash(call.inputs._transactions[i].boundParams),
+      getBoundParamsHash(call.inputs._transactions[i].boundParams),
       call.inputs._transactions[i].boundParams.unshield != 0,
-      commitmentBatchEventNew.treeNumber,
+      treeNumber,
       batchStartTreePosition
     );
-    batchStartTreePosition = BigInt.fromI64(call.inputs._transactions[i].commitments.length).plus(batchStartTreePosition); 
+    batchStartTreePosition = BigInt.fromI64(
+      call.inputs._transactions[i].commitments.length
+    ).plus(batchStartTreePosition);
     call.transaction.index;
+  }
+}
+
+export function handleLegacyTransactionCall(call: Transact1Call): void {
+  let commitmentBatchEventNew = CommitmentBatchEventNew.load(
+    idFrom2PaddedBigInts(call.block.number, call.transaction.index)
+  );
+  let batchStartTreePosition = BigInt.fromI64(123465);
+  let treeNumber = BigInt.fromI64(123465);
+  if (commitmentBatchEventNew == null) {
+    log.debug("CommitmentBatchEventNew not found for block {}, index {}", [
+      call.block.number.toString(),
+      call.transaction.index.toString(),
+    ]);
+  } else {
+    batchStartTreePosition = commitmentBatchEventNew.batchStartTreePosition;
+    treeNumber = commitmentBatchEventNew.treeNumber;
+  }
+
+  for (let i = 0; i < call.inputs._transactions.length; i++) {
+    const id = idFrom3PaddedBigInts(
+      call.block.number,
+      call.transaction.index,
+      BigInt.fromI32(i)
+    );
+
+    const merkleRoot = Bytes.fromUint8Array(
+      call.inputs._transactions[i].merkleRoot
+    );
+    const nullifiers: Bytes[] = call.inputs._transactions[i].nullifiers.map<
+      Bytes
+    >(
+      (x: BigInt): Bytes => Bytes.fromUint8Array(Bytes.fromBigInt(x).reverse())
+    );
+    const commitments: Bytes[] = call.inputs._transactions[i].commitments.map<
+      Bytes
+    >(
+      (x: BigInt): Bytes => Bytes.fromUint8Array(Bytes.fromBigInt(x).reverse())
+    );
+
+    saveTransaction(
+      id,
+      call.block.number,
+      call.transaction.hash,
+      merkleRoot,
+      nullifiers,
+      commitments,
+      getBoundParamsHashLegacy(call.inputs._transactions[i].boundParams),
+      call.inputs._transactions[i].boundParams.withdraw != 0,
+      treeNumber,
+      batchStartTreePosition
+    );
+    batchStartTreePosition = BigInt.fromI64(
+      call.inputs._transactions[i].commitments.length
+    ).plus(batchStartTreePosition);
   }
 }
