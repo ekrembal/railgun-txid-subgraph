@@ -1,7 +1,7 @@
 #!/bin/bash
 
-./replace-chain-id 1 && graph build --network mainnet && graph deploy --product hosted-service ekrembal/railgun-ethereum-experiments; \
-./replace-chain-id 5 && graph build --network goerli && graph deploy --product hosted-service ekrembal/railgun-goerli-experiments; \
+./replace-chain-id 1 && graph build --network mainnet && graph deploy --product hosted-service ekrembal/railgun-ethereum-v2-txids; \
+./replace-chain-id 5 && graph build --network goerli && graph deploy --product hosted-service ekrembal/railgun-goerli-v2-txids; \
 # ./replace-chain-id 56 && graph build --network bsc && graph deploy --product hosted-service railgun-community/railgun-v2-bsc; \
 # ./replace-chain-id 137 && graph build --network matic && graph deploy --product hosted-service railgun-community/railgun-v2-polygon; \
 # ./replace-chain-id 80001 && graph build --network mumbai && graph deploy --product hosted-service railgun-community/railgun-v2-mumbai; \

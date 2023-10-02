@@ -518,8 +518,13 @@ export function handleTransactionCall(call: TransactCall): void {
     );
     batchStartTreePosition = BigInt.fromI64(
       call.inputs._transactions[i].commitments.length
-    ).plus(batchStartTreePosition);
-    call.transaction.index;
+    )
+      .plus(batchStartTreePosition)
+      .minus(
+        BigInt.fromI64(
+          call.inputs._transactions[i].boundParams.unshield != 0 ? 1 : 0
+        )
+      );
   }
 }
 
@@ -575,6 +580,12 @@ export function handleLegacyTransactionCall(call: Transact1Call): void {
     );
     batchStartTreePosition = BigInt.fromI64(
       call.inputs._transactions[i].commitments.length
-    ).plus(batchStartTreePosition);
+    )
+      .plus(batchStartTreePosition)
+      .minus(
+        BigInt.fromI64(
+          call.inputs._transactions[i].boundParams.withdraw != 0 ? 1 : 0
+        )
+      );
   }
 }
