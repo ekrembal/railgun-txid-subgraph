@@ -314,9 +314,9 @@ export const saveTransaction = (
   entity.commitments = commitments.map<Bytes>((e) => e);
   entity.boundParamsHash = boundParams;
   entity.isUnshield = isUnshield;
-  entity.inputTreeNumber = inputTreeNumber;
-  entity.outputTreeNumber = outputTreeNumber;
-  entity.batchStartTreePosition = batchStartTreePosition;
+  entity.utxoTreeIn = inputTreeNumber;
+  entity.utxoTreeOut = outputTreeNumber;
+  entity.utxoBatchStartPositionOut = batchStartTreePosition;
   entity.save();
   return entity;
 };
