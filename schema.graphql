@@ -173,7 +173,8 @@ type Transaction implements TransactionInterface @entity(immutable: true) {
   commitments: [Bytes!]!
   boundParamsHash: Bytes!
   isUnshield: Boolean!
-  treeNumber: BigInt!
+  inputTreeNumber: BigInt!
+  outputTreeNumber: BigInt!
   batchStartTreePosition: BigInt!
 }
 
@@ -186,6 +187,7 @@ interface TransactionInterface {
   commitments: [Bytes!]!
   boundParamsHash: Bytes!
   isUnshield: Boolean!
-  treeNumber: BigInt!
+  inputTreeNumber: BigInt!
+  outputTreeNumber: BigInt!
   batchStartTreePosition: BigInt!
 }

@@ -512,6 +512,7 @@ export function handleTransactionCall(call: TransactCall): void {
       call.inputs._transactions[i].commitments,
       getBoundParamsHash(call.inputs._transactions[i].boundParams),
       call.inputs._transactions[i].boundParams.unshield != 0,
+      BigInt.fromI64(call.inputs._transactions[i].boundParams.treeNumber),
       treeNumber,
       batchStartTreePosition
     );
@@ -568,6 +569,7 @@ export function handleLegacyTransactionCall(call: Transact1Call): void {
       commitments,
       getBoundParamsHashLegacy(call.inputs._transactions[i].boundParams),
       call.inputs._transactions[i].boundParams.withdraw != 0,
+      BigInt.fromI64(call.inputs._transactions[i].boundParams.treeNumber),
       treeNumber,
       batchStartTreePosition
     );

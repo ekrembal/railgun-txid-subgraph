@@ -302,7 +302,8 @@ export const saveTransaction = (
   commitments: Bytes[],
   boundParams: Bytes,
   isUnshield: boolean,
-  treeNumber: BigInt,
+  inputTreeNumber: BigInt,
+  outputTreeNumber: BigInt,
   batchStartTreePosition: BigInt,
 ): Transaction => {
   const entity = new Transaction(id);
@@ -313,7 +314,8 @@ export const saveTransaction = (
   entity.commitments = commitments.map<Bytes>((e) => e);
   entity.boundParamsHash = boundParams;
   entity.isUnshield = isUnshield;
-  entity.treeNumber = treeNumber;
+  entity.inputTreeNumber = inputTreeNumber;
+  entity.outputTreeNumber = outputTreeNumber;
   entity.batchStartTreePosition = batchStartTreePosition;
   entity.save();
   return entity;
