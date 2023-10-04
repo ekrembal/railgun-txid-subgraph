@@ -176,6 +176,7 @@ type Transaction implements TransactionInterface @entity(immutable: true) {
   utxoTreeIn: BigInt!
   utxoTreeOut: BigInt!
   utxoBatchStartPositionOut: BigInt!
+  token: Token!
 }
 
 interface TransactionInterface {
@@ -190,4 +191,5 @@ interface TransactionInterface {
   utxoTreeIn: BigInt!
   utxoTreeOut: BigInt!
   utxoBatchStartPositionOut: BigInt!
+  token: Token!
 }

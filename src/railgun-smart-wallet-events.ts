@@ -483,8 +483,8 @@ export function handleTransactionCall(call: TransactCall): void {
   let commitmentBatchEventNew = CommitmentBatchEventNew.load(
     idFrom2PaddedBigInts(call.block.number, call.transaction.index)
   );
-  let batchStartTreePosition = BigInt.fromI64(123465);
-  let treeNumber = BigInt.fromI64(123465);
+  let batchStartTreePosition = BigInt.fromI64(99999);
+  let treeNumber = BigInt.fromI64(99999);
   if (commitmentBatchEventNew == null) {
     log.debug("CommitmentBatchEventNew not found for block {}, index {}", [
       call.block.number.toString(),
@@ -496,8 +496,12 @@ export function handleTransactionCall(call: TransactCall): void {
   }
 
   for (let i = 0; i < call.inputs._transactions.length; i++) {
-    // const x = poseidon(call.inputs._transactions[i].nullifiers.map((x) => bigint(x)));
-
+    const tokenInfo = call.inputs._transactions[i].unshieldPreimage.token;
+    const token = saveToken(
+      tokenInfo.tokenType,
+      tokenInfo.tokenAddress,
+      tokenInfo.tokenSubID
+    );
     const id = idFrom3PaddedBigInts(
       call.block.number,
       call.transaction.index,
@@ -514,7 +518,8 @@ export function handleTransactionCall(call: TransactCall): void {
       call.inputs._transactions[i].boundParams.unshield != 0,
       BigInt.fromI64(call.inputs._transactions[i].boundParams.treeNumber),
       treeNumber,
-      batchStartTreePosition
+      batchStartTreePosition,
+      token
     );
     batchStartTreePosition = BigInt.fromI64(
       call.inputs._transactions[i].commitments.length
@@ -532,8 +537,8 @@ export function handleLegacyTransactionCall(call: Transact1Call): void {
   let commitmentBatchEventNew = CommitmentBatchEventNew.load(
     idFrom2PaddedBigInts(call.block.number, call.transaction.index)
   );
-  let batchStartTreePosition = BigInt.fromI64(123465);
-  let treeNumber = BigInt.fromI64(123465);
+  let batchStartTreePosition = BigInt.fromI64(99999);
+  let treeNumber = BigInt.fromI64(99999);
   if (commitmentBatchEventNew == null) {
     log.debug("CommitmentBatchEventNew not found for block {}, index {}", [
       call.block.number.toString(),
@@ -549,6 +554,13 @@ export function handleLegacyTransactionCall(call: Transact1Call): void {
       call.block.number,
       call.transaction.index,
       BigInt.fromI32(i)
+    );
+
+    const tokenInfo = call.inputs._transactions[i].withdrawPreimage.token;
+    const token = saveToken(
+      tokenInfo.tokenType,
+      tokenInfo.tokenAddress,
+      tokenInfo.tokenSubID
     );
 
     const merkleRoot = Bytes.fromUint8Array(
@@ -576,7 +588,8 @@ export function handleLegacyTransactionCall(call: Transact1Call): void {
       call.inputs._transactions[i].boundParams.withdraw != 0,
       BigInt.fromI64(call.inputs._transactions[i].boundParams.treeNumber),
       treeNumber,
-      batchStartTreePosition
+      batchStartTreePosition,
+      token
     );
     batchStartTreePosition = BigInt.fromI64(
       call.inputs._transactions[i].commitments.length
