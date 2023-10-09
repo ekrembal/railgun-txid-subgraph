@@ -305,7 +305,9 @@ export const saveTransaction = (
   inputTreeNumber: BigInt,
   outputTreeNumber: BigInt,
   batchStartTreePosition: BigInt,
-  token: Token,
+  unshieldToken: Token,
+  unshieldToAddress: Bytes,
+  unshieldValue: BigInt,
 ): Transaction => {
   const entity = new Transaction(id);
   entity.transactionHash = transactionHash;
@@ -318,7 +320,9 @@ export const saveTransaction = (
   entity.utxoTreeIn = inputTreeNumber;
   entity.utxoTreeOut = outputTreeNumber;
   entity.utxoBatchStartPositionOut = batchStartTreePosition;
-  entity.token = token.id;
+  entity.unshieldToken = unshieldToken.id;
+  entity.unshieldToAddress = unshieldToAddress;
+  entity.unshieldValue = unshieldValue;
   entity.save();
   return entity;
 };
