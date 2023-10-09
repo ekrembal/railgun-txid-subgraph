@@ -179,6 +179,7 @@ type Transaction implements TransactionInterface @entity(immutable: true) {
   unshieldToken: Token!
   unshieldToAddress: Bytes!
   unshieldValue: BigInt!
+  blockTimestamp: BigInt!
 }
 
 interface TransactionInterface {
@@ -196,4 +197,5 @@ interface TransactionInterface {
   unshieldToken: Token!
   unshieldToAddress: Bytes!
   unshieldValue: BigInt!
+  blockTimestamp: BigInt!
 }

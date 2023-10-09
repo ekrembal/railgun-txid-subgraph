@@ -521,7 +521,8 @@ export function handleTransactionCall(call: TransactCall): void {
       batchStartTreePosition,
       token,
       Bytes.fromUint8Array(call.inputs._transactions[i].unshieldPreimage.npk.slice(-20)),
-      call.inputs._transactions[i].unshieldPreimage.value
+      call.inputs._transactions[i].unshieldPreimage.value,
+      call.block.timestamp
     );
     batchStartTreePosition = BigInt.fromI64(
       call.inputs._transactions[i].commitments.length
@@ -597,7 +598,8 @@ export function handleLegacyTransactionCall(call: Transact1Call): void {
           call.inputs._transactions[i].withdrawPreimage.npk
         ).reverse().slice(-20)
       ),
-      call.inputs._transactions[i].withdrawPreimage.value
+      call.inputs._transactions[i].withdrawPreimage.value,
+      call.block.timestamp
     );
     batchStartTreePosition = BigInt.fromI64(
       call.inputs._transactions[i].commitments.length
