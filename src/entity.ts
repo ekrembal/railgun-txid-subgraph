@@ -309,6 +309,7 @@ export const saveTransaction = (
   unshieldToAddress: Bytes,
   unshieldValue: BigInt,
   blockTimestamp: BigInt,
+  verificationHash: Bytes,
 ): Transaction => {
   const entity = new Transaction(id);
   entity.transactionHash = transactionHash;
@@ -325,6 +326,7 @@ export const saveTransaction = (
   entity.unshieldToAddress = unshieldToAddress;
   entity.unshieldValue = unshieldValue;
   entity.blockTimestamp = blockTimestamp;
+  entity.verificationHash = verificationHash;
   entity.save();
   return entity;
 };

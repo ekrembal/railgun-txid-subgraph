@@ -56,7 +56,6 @@ type CommitmentBatchEventNew @entity(immutable: true) {
   batchStartTreePosition: BigInt!
 }
 
-
 # We use an Interface in order to query all Commitment types at once,
 #  but retain strong typings for individual fields.
 interface Commitment {
@@ -180,6 +179,7 @@ type Transaction implements TransactionInterface @entity(immutable: true) {
   unshieldToAddress: Bytes!
   unshieldValue: BigInt!
   blockTimestamp: BigInt!
+  verificationHash: Bytes!
 }
 
 interface TransactionInterface {
@@ -198,4 +198,10 @@ interface TransactionInterface {
   unshieldToAddress: Bytes!
   unshieldValue: BigInt!
   blockTimestamp: BigInt!
+  verificationHash: Bytes!
+}
+
+type VerificationHash @entity(immutable: false) {
+  id: Bytes!
+  verificationHash: Bytes!
 }

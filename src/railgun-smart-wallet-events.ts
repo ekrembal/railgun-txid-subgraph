@@ -40,7 +40,7 @@ import {
   idFrom3PaddedBigInts,
 } from "./id";
 import { getNoteHash } from "./hash";
-import { CommitmentBatchEventNew } from "../generated/schema";
+import { CommitmentBatchEventNew, VerificationHash } from "../generated/schema";
 
 /**
  * Enable to log IDs for new entities in this file.
@@ -480,6 +480,13 @@ export const getBoundParamsHashLegacy = (
 };
 
 export function handleTransactionCall(call: TransactCall): void {
+  let lastVerificationHash = VerificationHash.load(Bytes.empty());
+  if (lastVerificationHash == null) {
+    lastVerificationHash = new VerificationHash(Bytes.empty());
+    lastVerificationHash.verificationHash = Bytes.empty();
+  }
+  let curVerificationHash = lastVerificationHash.verificationHash;
+
   let commitmentBatchEventNew = CommitmentBatchEventNew.load(
     idFrom2PaddedBigInts(call.block.number, call.transaction.index)
   );
@@ -496,6 +503,12 @@ export function handleTransactionCall(call: TransactCall): void {
   }
 
   for (let i = 0; i < call.inputs._transactions.length; i++) {
+    curVerificationHash = Bytes.fromUint8Array(
+      crypto.keccak256(
+        curVerificationHash.concat(call.inputs._transactions[i].nullifiers[0])
+      )
+    );
+
     const tokenInfo = call.inputs._transactions[i].unshieldPreimage.token;
     const token = saveToken(
       tokenInfo.tokenType,
@@ -520,9 +533,12 @@ export function handleTransactionCall(call: TransactCall): void {
       treeNumber,
       batchStartTreePosition,
       token,
-      Bytes.fromUint8Array(call.inputs._transactions[i].unshieldPreimage.npk.slice(-20)),
+      Bytes.fromUint8Array(
+        call.inputs._transactions[i].unshieldPreimage.npk.slice(-20)
+      ),
       call.inputs._transactions[i].unshieldPreimage.value,
-      call.block.timestamp
+      call.block.timestamp,
+      curVerificationHash
     );
     batchStartTreePosition = BigInt.fromI64(
       call.inputs._transactions[i].commitments.length
@@ -534,9 +550,18 @@ export function handleTransactionCall(call: TransactCall): void {
         )
       );
   }
+  lastVerificationHash.verificationHash = curVerificationHash;
+  lastVerificationHash.save();
 }
 
 export function handleLegacyTransactionCall(call: Transact1Call): void {
+  let lastVerificationHash = VerificationHash.load(Bytes.empty());
+  if (lastVerificationHash == null) {
+    lastVerificationHash = new VerificationHash(Bytes.empty());
+    lastVerificationHash.verificationHash = Bytes.empty();
+  }
+  let curVerificationHash = lastVerificationHash.verificationHash;
+
   let commitmentBatchEventNew = CommitmentBatchEventNew.load(
     idFrom2PaddedBigInts(call.block.number, call.transaction.index)
   );
@@ -580,6 +605,10 @@ export function handleLegacyTransactionCall(call: Transact1Call): void {
       (x: BigInt): Bytes => Bytes.fromUint8Array(Bytes.fromBigInt(x).reverse())
     );
 
+    curVerificationHash = Bytes.fromUint8Array(
+      crypto.keccak256(curVerificationHash.concat(nullifiers[0]))
+    );
+
     saveTransaction(
       id,
       call.block.number,
@@ -594,12 +623,13 @@ export function handleLegacyTransactionCall(call: Transact1Call): void {
       batchStartTreePosition,
       token,
       Bytes.fromUint8Array(
-        Bytes.fromBigInt(
-          call.inputs._transactions[i].withdrawPreimage.npk
-        ).reverse().slice(-20)
+        Bytes.fromBigInt(call.inputs._transactions[i].withdrawPreimage.npk)
+          .reverse()
+          .slice(-20)
       ),
       call.inputs._transactions[i].withdrawPreimage.value,
-      call.block.timestamp
+      call.block.timestamp,
+      curVerificationHash
     );
     batchStartTreePosition = BigInt.fromI64(
       call.inputs._transactions[i].commitments.length
@@ -611,4 +641,6 @@ export function handleLegacyTransactionCall(call: Transact1Call): void {
         )
       );
   }
+  lastVerificationHash.verificationHash = curVerificationHash;
+  lastVerificationHash.save();
 }

@@ -18,6 +18,7 @@ dataSources:
         - CommitmentPreimage
         - Commitment
         - Unshield
+        - Transaction
       abis:
         - name: RailgunSmartWallet
           file: ./abis/RailgunSmartWallet.json
