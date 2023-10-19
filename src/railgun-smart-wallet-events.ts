@@ -18,6 +18,7 @@ import {
   bigIntToBytes,
   reversedBytesToBigInt,
   reverseBytes,
+  calculateRailgunTransactionVerificationHash,
 } from "./utils";
 import {
   saveCiphertextFromBytesArray,
@@ -503,12 +504,10 @@ export function handleTransactionCall(call: TransactCall): void {
   }
 
   for (let i = 0; i < call.inputs._transactions.length; i++) {
-    curVerificationHash = Bytes.fromUint8Array(
-      crypto.keccak256(
-        curVerificationHash.concat(call.inputs._transactions[i].nullifiers[0])
-      )
+    curVerificationHash = calculateRailgunTransactionVerificationHash(
+      curVerificationHash,
+      call.inputs._transactions[i].nullifiers[0]
     );
-
     const tokenInfo = call.inputs._transactions[i].unshieldPreimage.token;
     const token = saveToken(
       tokenInfo.tokenType,
@@ -605,8 +604,9 @@ export function handleLegacyTransactionCall(call: Transact1Call): void {
       (x: BigInt): Bytes => Bytes.fromUint8Array(Bytes.fromBigInt(x).reverse())
     );
 
-    curVerificationHash = Bytes.fromUint8Array(
-      crypto.keccak256(curVerificationHash.concat(nullifiers[0]))
+    curVerificationHash = calculateRailgunTransactionVerificationHash(
+      curVerificationHash,
+      nullifiers[0]
     );
 
     saveTransaction(
