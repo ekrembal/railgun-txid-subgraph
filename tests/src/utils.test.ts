@@ -1,5 +1,5 @@
 import { assert, describe, test } from "matchstick-as/assembly/index";
-import { Bytes, BigInt, ByteArray } from "@graphprotocol/graph-ts";
+import { Bytes, BigInt, ByteArray, log } from "@graphprotocol/graph-ts";
 import {
   bigIntToBytes,
   stripPrefix0x,
@@ -18,7 +18,7 @@ describe("utils", () => {
         )
       ),
       Bytes.fromHexString(
-        "0x9dab1e67409e2f7e248c634732cc669e39b739a8255a2bd7af99d078022845d5"
+        "0x099cd3ebcadaf6ff470d16bc0186fb5f26cd4103e9970effc9b6679478e11c72"
       )
     );
     assert.bytesEquals(

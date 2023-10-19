@@ -1,4 +1,4 @@
-import { Bytes, BigInt } from "@graphprotocol/graph-ts";
+import { Bytes, BigInt, log } from "@graphprotocol/graph-ts";
 import { crypto } from "@graphprotocol/graph-ts";
 
 export const stripPrefix0x = (bytes: Bytes): string => {
@@ -63,7 +63,7 @@ export const calculateRailgunTransactionVerificationHash = (
   // hash[n] = keccak(hash[n-1] ?? 0, n_firstNullifier);
   const combinedData: Bytes = previousVerificationHash
     ? previousVerificationHash.concat(firstNullifier)
-    : Bytes.empty().concat(firstNullifier);
+    : Bytes.fromHexString("0x").concat(firstNullifier);
   return Bytes.fromHexString(
     padHexString(crypto.keccak256(combinedData).toHexString(), 32)
   );
@@ -76,7 +76,7 @@ export const calculateRailgunTransactionVerificationHashStr = (
   return calculateRailgunTransactionVerificationHash(
     previousVerificationHash
       ? Bytes.fromHexString(previousVerificationHash)
-      : null,
+      : Bytes.fromHexString("0x"),
     Bytes.fromHexString(firstNullifier)
   ).toHexString();
 };
