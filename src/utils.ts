@@ -57,13 +57,15 @@ export const SNARK_PRIME_BIG_INT = BigInt.fromString(
 );
 
 export const calculateRailgunTransactionVerificationHash = (
-  previousVerificationHash: Bytes | null,
+  previousVerificationHash: Bytes,
   firstNullifier: Bytes
 ): Bytes => {
-  // hash[n] = keccak(hash[n-1] ?? 0, n_firstNullifier);
-  const combinedData: Bytes = previousVerificationHash
-    ? previousVerificationHash.concat(firstNullifier)
-    : Bytes.fromHexString("0x").concat(firstNullifier);
+  const combinedData: Bytes =
+    previousVerificationHash != Bytes.fromHexString("0x")
+      ? padTo32BytesStart(previousVerificationHash).concat(
+          padTo32BytesStart(firstNullifier)
+        )
+      : Bytes.fromHexString("0x").concat(padTo32BytesStart(firstNullifier));
   return Bytes.fromHexString(
     padHexString(crypto.keccak256(combinedData).toHexString(), 32)
   );

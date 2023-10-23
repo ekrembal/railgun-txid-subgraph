@@ -24,12 +24,12 @@ describe("utils", () => {
     assert.bytesEquals(
       Bytes.fromHexString(
         calculateRailgunTransactionVerificationHashStr(
-          "0x9dab1e67409e2f7e248c634732cc669e39b739a8255a2bd7af99d078022845d5",
-          "0x26d7d0d235dc1849e9794061ebc74e9ea211b8b5004081d26c7d086bdd3c0c35"
+          "0x7497bd492633825701d6eefc644139d236f46ef961936f0aa69b6751af14497b",
+          "0x0727631f24f543408350df5883261cd5ab89d191c43da1436824ce637328c4"
         )
       ),
       Bytes.fromHexString(
-        "0x5b56d81f2ac6b4caf15508fce1d68d5a6e9a157b97c1d0938078574b0aca3842"
+        "0x31972b456d6d34a379e8576ed2a51d097f4046438456653914460d5e346f9dd4"
       )
     );
   });
