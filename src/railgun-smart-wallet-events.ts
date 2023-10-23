@@ -481,10 +481,10 @@ export const getBoundParamsHashLegacy = (
 };
 
 export function handleTransactionCall(call: TransactCall): void {
-  let lastVerificationHash = VerificationHash.load(Bytes.empty());
+  let lastVerificationHash = VerificationHash.load(Bytes.fromHexString("0x"));
   if (lastVerificationHash == null) {
-    lastVerificationHash = new VerificationHash(Bytes.empty());
-    lastVerificationHash.verificationHash = Bytes.empty();
+    lastVerificationHash = new VerificationHash(Bytes.fromHexString("0x"));
+    lastVerificationHash.verificationHash = Bytes.fromHexString("0x");
   }
   let curVerificationHash = lastVerificationHash.verificationHash;
 
@@ -554,10 +554,10 @@ export function handleTransactionCall(call: TransactCall): void {
 }
 
 export function handleLegacyTransactionCall(call: Transact1Call): void {
-  let lastVerificationHash = VerificationHash.load(Bytes.empty());
+  let lastVerificationHash = VerificationHash.load(Bytes.fromHexString("0x"));
   if (lastVerificationHash == null) {
-    lastVerificationHash = new VerificationHash(Bytes.empty());
-    lastVerificationHash.verificationHash = Bytes.empty();
+    lastVerificationHash = new VerificationHash(Bytes.fromHexString("0x"));
+    lastVerificationHash.verificationHash = Bytes.fromHexString("0x");
   }
   let curVerificationHash = lastVerificationHash.verificationHash;
 
